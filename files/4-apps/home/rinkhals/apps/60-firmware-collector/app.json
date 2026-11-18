@@ -2,23 +2,23 @@
     "$version": "1",
 
     "name": "Firmware Collector (opt-in)",
-    "description": "Periodically asks Anycubic if new firmware is available for this printer model using the printer's own device certificate. If a new version is found, sends only the download URL and version metadata to the Rinkhals community archive (rinkhals.firmwareforge.org) so we can produce Rinkhals patches sooner. Does not transmit certificates, account info, or any personal data. Disabled by default.",
+    "description": "定期使用印表機本身的裝置憑證，向 Anycubic 查詢此型號是否有新韌體。若有新版本，只會將下載網址和版本中繼資料傳送至 Rinkhals 社群典藏站（rinkhals.firmwareforge.org），以加速製作修補程式。不會傳送憑證、帳號資訊或任何個人資料。預設停用。",
     "version": "1.0",
 
     "properties": {
         "ingest_endpoint": {
-            "display": "Ingest endpoint URL",
+            "display": "資料接收端點網址",
             "type": "text",
             "default": "https://ingest.firmwareforge.org/v1/notify",
             "advanced": true
         },
         "check_interval_hours": {
-            "display": "Check interval (hours)",
+            "display": "檢查間隔（小時）",
             "type": "text",
             "default": "24"
         },
         "dry_run": {
-            "display": "Dry run (log only, no upload)",
+            "display": "試執行（僅記錄，不上傳）",
             "type": "enum",
             "options": ["False", "True"],
             "default": "False",

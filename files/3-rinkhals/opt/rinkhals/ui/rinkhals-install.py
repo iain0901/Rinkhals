@@ -49,11 +49,11 @@ class Tool:
         self.action_color = action_color
 
 tools = [
-    tool_debug_bundle := Tool('Generate a Debug Bundle', '', 'debug-bundle.sh', 'This tool will generate a debug bundle on the attached USB drive.\nIt will take 10 to 15 seconds. Do you want to proceed?', 'Yes'),
-    tool_reset_config := Tool('Reset Rinkhals configuration', '', 'config-reset.sh', 'This tool will reset all Rinkhals configuration. Your printer will be like the first time you installed Rinkhals.\nYour printer will then reboot. Do you want to proceed?', 'Yes', lvr.COLOR_DANGER),
-    tool_backup_partitions := Tool('Backup partitions', '', 'backup-partitions.sh', 'This tool will backup your printer /userdata and /useremain partition on the attached USB drive.\nIt will take up to a minute. Do you want to proceed?', 'Yes'),
-    tool_clean_rinkhals := Tool('Clean old Rinkhals', '', 'clean-rinkhals.sh', 'This tool will remove old installed Rinkhals versions. 2 versions and the current one will be kept. Do you want to proceed?', 'Yes'),
-    tool_uninstall_rinkhals := Tool('Uninstall Rinkhals', '', 'rinkhals-uninstall.sh', 'This tool will completely uninstall Rinkhals from your printer. Do you want to proceed?', 'Yes', lvr.COLOR_DANGER),
+    tool_debug_bundle := Tool('產生除錯資料包', '', 'debug-bundle.sh', '此工具將在已插入的 USB 隨身碟上產生除錯資料包。\n約需 10 至 15 秒。要繼續嗎？', '確認'),
+    tool_reset_config := Tool('重設 Rinkhals 設定', '', 'config-reset.sh', '此工具將把 Rinkhals 還原成初次安裝時的設定。\n印表機隨後會重新啟動。要繼續嗎？', '確認', lvr.COLOR_DANGER),
+    tool_backup_partitions := Tool('備份分割區', '', 'backup-partitions.sh', '此工具將把 /userdata 和 /useremain 分割區備份到已插入的 USB 隨身碟。\n最多約需一分鐘。要繼續嗎？', '確認'),
+    tool_clean_rinkhals := Tool('清理舊版 Rinkhals', '', 'clean-rinkhals.sh', '此工具將移除舊版 Rinkhals，保留目前版本及另外兩個版本。要繼續嗎？', '確認'),
+    tool_uninstall_rinkhals := Tool('解除安裝 Rinkhals', '', 'rinkhals-uninstall.sh', '此工具將從印表機完全解除安裝 Rinkhals。要繼續嗎？', '確認', lvr.COLOR_DANGER),
     #tool_factory_reset := Tool('Factory reset', '', 'factory-reset.sh', 'The tool will factory reset your printer', 'Yes', lvr.COLOR_DANGER),
 ]
 
@@ -73,7 +73,7 @@ class RinkhalsInstallApp(BaseApp):
             image_rinkhals.scale_to(lv.dpx(100))
 
             label_title = lvr.title(self.screen_welcome)
-            label_title.set_text('Rinkhals Installer')
+            label_title.set_text('Rinkhals 安裝程式')
 
             def show_main():
                 self.show_screen(self.screen_main)
@@ -83,7 +83,7 @@ class RinkhalsInstallApp(BaseApp):
             button_start.set_style_margin_top(lv.dpx(20), lv.STATE.DEFAULT)
             button_start.add_event_cb(lambda e: show_main(), lv.EVENT_CODE.CLICKED, None)
             button_start_label = lvr.label(button_start)
-            button_start_label.set_text('Continue')
+            button_start_label.set_text('繼續')
             button_start_label.center()
                 
             button_exit = lvr.button_icon(self.screen_welcome)
@@ -142,7 +142,7 @@ class RinkhalsInstallApp(BaseApp):
                 rinkhals_icon.scale_to(lv.dpx(70))
 
                 label_rinkhals = lvr.title(self.screen_logo)
-                label_rinkhals.set_text('Rinkhals Installer')
+                label_rinkhals.set_text('Rinkhals 安裝程式')
                 label_rinkhals.set_style_pad_top(lv.dpx(20), lv.STATE.DEFAULT)
                 label_rinkhals.set_style_pad_bottom(lv.dpx(10), lv.STATE.DEFAULT)
                 
@@ -177,27 +177,27 @@ class RinkhalsInstallApp(BaseApp):
 
                 button_install = lvr.button(panel_tools)
                 button_install.set_size(button_width, lvr.get_large_button_height())
-                button_install.set_text('Install & Updates')
+                button_install.set_text('安裝與更新')
                 button_install.set_icon('')
                 button_install.add_event_cb(lambda e: self.show_screen(self.screen_ota), lv.EVENT_CODE.CLICKED, None)
 
                 button_tools = lvr.button(panel_tools)
                 button_tools.set_size(button_width, lvr.get_large_button_height())
-                button_tools.set_text('Tools')
+                button_tools.set_text('工具')
                 button_tools.set_icon('')
                 button_tools.add_event_cb(lambda e: self.show_screen(self.screen_tools), lv.EVENT_CODE.CLICKED, None)
 
                 button_diagnostics = lvr.button(panel_tools)
                 button_diagnostics.set_size(button_width, lvr.get_large_button_height())
-                button_diagnostics.set_text('Diagnostics')
+                button_diagnostics.set_text('診斷')
                 button_diagnostics.set_icon('')
                 button_diagnostics.add_event_cb(lambda e: self.show_screen(self.screen_diagnostics), lv.EVENT_CODE.CLICKED, None)
 
                 button_reboot = lvr.button(panel_tools)
                 button_reboot.set_size(button_width, lvr.get_large_button_height())
-                button_reboot.set_text('Reboot')
+                button_reboot.set_text('重新啟動')
                 button_reboot.set_icon('')
-                button_reboot.add_event_cb(lambda e: self.show_text_dialog('Are you sure\nyou want to reboot?', 'Yes', callback=lambda: system('sync && reboot')), lv.EVENT_CODE.CLICKED, None)
+                button_reboot.add_event_cb(lambda e: self.show_text_dialog('確定要重新啟動嗎？', '確認', callback=lambda: system('sync && reboot')), lv.EVENT_CODE.CLICKED, None)
 
         with lvr.lock():
             self.layout_ota()
@@ -218,7 +218,7 @@ class RinkhalsInstallApp(BaseApp):
                 title_bar.set_y(-lvr.get_title_bar_height())
                 
                 title = lvr.title(title_bar)
-                title.set_text('Tools')
+                title.set_text('工具')
                 title.center()
 
                 icon_back = lvr.button_icon(title_bar)
@@ -253,7 +253,7 @@ class RinkhalsInstallApp(BaseApp):
                 title_bar = lvr.title_bar(self.screen_diagnostics)
                 
                 title = lvr.title(title_bar)
-                title.set_text('Diagnostics')
+                title.set_text('診斷')
                 title.center()
 
                 icon_back = lvr.button_icon(title_bar)
@@ -300,12 +300,12 @@ class RinkhalsInstallApp(BaseApp):
 
                 self.modal_tool.button_cancel = lvr.button(panel_actions)
                 self.modal_tool.button_cancel.set_width(lv.pct(45))
-                self.modal_tool.button_cancel.set_text('Cancel')
+                self.modal_tool.button_cancel.set_text('取消')
                 self.modal_tool.button_cancel.add_event_cb(lambda e: self.hide_modal(), lv.EVENT_CODE.CLICKED, None)
                 
                 self.modal_tool.button_action = lvr.button(panel_actions)
                 self.modal_tool.button_action.set_width(lv.pct(45))
-                self.modal_tool.button_action.set_text('Download')
+                self.modal_tool.button_action.set_text('下載')
 
         with lvr.lock():
             self.modal_diagnostic = lvr.modal(self.root_modal, tag='modal_diagnostic')
@@ -340,12 +340,12 @@ class RinkhalsInstallApp(BaseApp):
 
                 self.modal_diagnostic.button_cancel = lvr.button(panel_actions)
                 self.modal_diagnostic.button_cancel.set_width(lv.pct(45))
-                self.modal_diagnostic.button_cancel.set_text('Cancel')
+                self.modal_diagnostic.button_cancel.set_text('取消')
                 self.modal_diagnostic.button_cancel.add_event_cb(lambda e: self.hide_modal(), lv.EVENT_CODE.CLICKED, None)
                 
                 self.modal_diagnostic.button_action = lvr.button(panel_actions)
                 self.modal_diagnostic.button_action.set_width(lv.pct(45))
-                self.modal_diagnostic.button_action.set_text('Download')
+                self.modal_diagnostic.button_action.set_text('下載')
 
     def preload(self):
         import requests
@@ -401,7 +401,7 @@ class RinkhalsInstallApp(BaseApp):
             if len(diagnostics) == 0:
                 tag = lvr.tag(self.screen_logo.panel_tags)
                 tag.set_icon('')
-                tag.set_text('Everything is awesome')
+                tag.set_text('狀態正常')
                 tag.set_color(color_info)
 
             lv.unlock()
@@ -421,7 +421,7 @@ class RinkhalsInstallApp(BaseApp):
                 panel_text.set_size(lv.pct(100), lv.dpx(150))
 
                 label_text = lvr.label(panel_text)
-                label_text.set_text('No issues have been found on your printer')
+                label_text.set_text('未發現印表機有任何問題')
                 label_text.set_style_text_color(lvr.COLOR_DISABLED, lv.STATE.DEFAULT)
                 label_text.set_width(lv.pct(80))
                 label_text.set_align(lv.ALIGN.CENTER)
@@ -448,15 +448,15 @@ class RinkhalsInstallApp(BaseApp):
                 if d.type == DiagnosticType.INFO:
                     color = lv.color_make(0, 180, 0)
                     icon = ''
-                    text = 'Info'
+                    text = '資訊'
                 elif d.type == DiagnosticType.WARNING:
                     color = lv.color_make(180, 160, 0)
                     icon = ''
-                    text = 'Warning'
+                    text = '警告'
                 elif d.type == DiagnosticType.ERROR:
                     color = lv.color_make(180, 0, 0)
                     icon = ''
-                    text = 'Error'
+                    text = '錯誤'
 
                 tag_type = lvr.tag(panel_diagnostic)
                 tag_type.set_align(lv.ALIGN.RIGHT_MID)
@@ -498,7 +498,7 @@ class RinkhalsInstallApp(BaseApp):
         self.modal_tool.label_description.set_text(tool.description)
 
         self.modal_tool.button_action.set_style_text_color(tool.action_color or lvr.COLOR_TEXT, lv.STATE.DEFAULT)
-        self.modal_tool.button_action.set_text(tool.action or 'Run')
+        self.modal_tool.button_action.set_text(tool.action or '執行')
         self.modal_tool.button_action.clear_event_cb()
         self.modal_tool.button_action.add_event_cb(lambda e: run_async(run_tool), lv.EVENT_CODE.CLICKED, None)
 
@@ -510,20 +510,20 @@ class RinkhalsInstallApp(BaseApp):
         fix_cb = None
 
         if diagnostic.fix_action == DiagnosticFixes.RESET_CONFIGURATION:
-            fix_text = 'Reset Rinkhals configuration to default. Your customizations will be backup up on the attached USB drive.'
-            fix_action = 'Reset'
+            fix_text = '將 Rinkhals 還原為預設設定。自訂設定會備份到已插入的 USB 隨身碟。'
+            fix_action = '重設'
             def fix_cb(e):
                 self.hide_modal()
                 self.show_tool_modal(tool_reset_config)
         elif diagnostic.fix_action == DiagnosticFixes.REINSTALL_RINKHALS:
-            fix_text = 'Reinstall Rinkhals. Your customizations will be kept.'
-            fix_action = 'Reinstall'
+            fix_text = '重新安裝 Rinkhals，並保留自訂設定。'
+            fix_action = '重新安裝'
             def fix_cb(e):
                 self.hide_modal()
                 self.show_screen(self.screen_ota_rinkhals)
         elif diagnostic.fix_action == DiagnosticFixes.REINSTALL_RINKHALS_LAUNCHER:
-            fix_text = 'Patch Kobra startup to install Rinkhals launcher.'
-            fix_action = 'Patch'
+            fix_text = '修補 Kobra 啟動程式，並安裝 Rinkhals 啟動器。'
+            fix_action = '套用修補'
             def fix_cb(e):
                 if os.path.exists('/useremain/rinkhals/.version'):
                     if os.path.exists('/userdata/app/gk/start.sh'):
@@ -537,20 +537,20 @@ class RinkhalsInstallApp(BaseApp):
                 self.layout_main(force=True)
                 self.layout_diagnostics()
         elif diagnostic.fix_action == DiagnosticFixes.REINSTALL_FIRMWARE:
-            fix_text = 'Reinstall system firmware. Rinkhals will be re-enabled. Your customizations will be kept.'
-            fix_action = 'Reinstall'
+            fix_text = '重新安裝系統韌體。Rinkhals 會重新啟用，並保留自訂設定。'
+            fix_action = '重新安裝'
             def fix_cb(e):
                 self.hide_modal()
                 self.show_screen(self.screen_ota_firmware)
         elif diagnostic.fix_action and callable(diagnostic.fix_action):
-            fix_text = diagnostic.fix_text or 'Run custom fix'
-            fix_action = 'Fix'
+            fix_text = diagnostic.fix_text or '執行自訂修復'
+            fix_action = '修復'
             def fix_cb(e):
                 diagnostic.fix_action()
                 self.hide_modal()
                 self.layout_main(True)
 
-        self.modal_diagnostic.label_fix.set_text('Fix: ' + fix_text)
+        self.modal_diagnostic.label_fix.set_text('修復：' + fix_text)
 
         self.modal_diagnostic.button_action.set_style_text_color(lvr.COLOR_DANGER, lv.STATE.DEFAULT)
         self.modal_diagnostic.button_action.set_text(fix_action)

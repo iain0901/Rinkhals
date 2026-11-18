@@ -2,7 +2,7 @@
     "$version": "1",
 
     "name": "Mainsail",
-    "description": "Lightweight, responsive web user interface for Klipper. Uses port 4409.",
+    "description": "適用於 Klipper 的輕量自適應網頁介面，使用連接埠 4409。",
     "version": "2.17.0",
 
     "requirements":

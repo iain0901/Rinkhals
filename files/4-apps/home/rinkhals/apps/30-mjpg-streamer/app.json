@@ -2,12 +2,12 @@
     "$version": "1",
 
     "name": "mjpg-streamer",
-    "description": "Replaces the default Anycubic camera stream with mjpg-streamer for Mainsail, Fluidd and other Moonraker clients",
+    "description": "以 mjpg-streamer 取代 Anycubic 預設的攝影機串流，供 Mainsail、Fluidd 及其他 Moonraker 用戶端使用。",
     "version": "0.1",
 
     "properties": {
         "resolution": {
-            "display": "Resolution",
+            "display": "解析度",
             "type": "enum",
             "options": [ "640x480", "1280x720", "1920x1080" ],
             "default": "1280x720"

@@ -2,24 +2,24 @@
     "$version": "1",
 
     "name": "Moonraker",
-    "description": "Web server that exposes APIs with which client applications may use to interact with the 3D printing firmware Klipper.",
+    "description": "提供網頁 API，供用戶端與 Klipper 3D 列印韌體互動。",
     "version": "6ff9a7c",
 
     "properties": {
         "mqtt_print_auto_leveling": {
-            "display": "Auto leveling when starting prints",
+            "display": "開始列印時自動調平",
             "type": "enum",
             "options": [ "False", "True" ],
             "default": "False"
         },
         "mqtt_print_vibration_compensation": {
-            "display": "Vibration compensation when starting prints",
+            "display": "開始列印時執行振動補償",
             "type": "enum",
             "options": [ "False", "True" ],
             "default": "False"
         },
         "mqtt_print_flow_calibration": {
-            "display": "Flow calibration when starting prints",
+            "display": "開始列印時校正流量",
             "type": "enum",
             "options": [ "False", "True" ],
             "default": "False"

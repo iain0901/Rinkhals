@@ -2,7 +2,7 @@
     "$version": "1",
 
     "name": "Remote Display",
-    "description": "Enables VNC server running on port 5900 and client web application (noVNC) running on port 5800. Warning: This app is CPU-intensive, so connecting to VNC is not recommended while printing.",
+    "description": "啟用 VNC 伺服器（連接埠 5900）及 noVNC 網頁用戶端（連接埠 5800）。此功能會占用較多 CPU 資源，不建議在列印時使用 VNC。",
     "version": "1.0.0",
 
     "requirements":

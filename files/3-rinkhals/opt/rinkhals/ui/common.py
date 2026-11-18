@@ -502,8 +502,8 @@ class Diagnostic:
         if not printer_info:
             yield Diagnostic(
                 type=DiagnosticType.ERROR,
-                short_text='Unknown environment',
-                long_text='Unable to detect environment, your printer might be corrupted',
+                short_text='無法識別環境',
+                long_text='無法偵測執行環境，印表機系統可能已損毀',
                 fix_action=DiagnosticFixes.REINSTALL_FIRMWARE
             )
 
@@ -513,8 +513,8 @@ class Diagnostic:
         if not os.path.exists(printer_cfg_path):
             yield Diagnostic(
                 type=DiagnosticType.ERROR,
-                short_text='Missing configuration',
-                long_text='Unable to find default printer.cfg',
+                short_text='缺少設定',
+                long_text='找不到預設的 printer.cfg',
                 fix_action=DiagnosticFixes.REINSTALL_FIRMWARE
             )
         else:
@@ -566,16 +566,16 @@ class Diagnostic:
                 if abs(printer_cfg_mtime - api_cfg_mtime) > 5:
                     yield Diagnostic(
                         type=DiagnosticType.WARNING,
-                        short_text='Modified configuration',
-                        long_text='Your printer.cfg has likely been modified',
+                        short_text='設定已修改',
+                        long_text='printer.cfg 可能已被修改',
                         fix_action=DiagnosticFixes.REINSTALL_FIRMWARE
                     )
 
             elif printer_cfg_hash != supposed_hash:
                 yield Diagnostic(
                     type=DiagnosticType.WARNING,
-                    short_text='Modified configuration',
-                    long_text='Your printer.cfg has been modified',
+                    short_text='設定已修改',
+                    long_text='printer.cfg 已被修改',
                     fix_action=DiagnosticFixes.REINSTALL_FIRMWARE
                 )
 
@@ -590,8 +590,8 @@ class Diagnostic:
                 if len(custom_lines) > 0:
                     yield Diagnostic(
                         type=DiagnosticType.WARNING,
-                        short_text='Customized configuration',
-                        long_text='You have printer configuration customizations',
+                        short_text='自訂設定',
+                        long_text='印表機有自訂設定',
                         fix_action=DiagnosticFixes.RESET_CONFIGURATION
                     )
             except:
@@ -601,8 +601,8 @@ class Diagnostic:
         if os.path.exists('/useremain/rinkhals/.disable-rinkhals'):
             yield Diagnostic(
                 type=DiagnosticType.WARNING,
-                short_text='Rinkhals disabled',
-                long_text='Rinkhals is disabled by the .disable-rinkhals file',
+                short_text='Rinkhals 已停用',
+                long_text='.disable-rinkhals 檔案已停用 Rinkhals',
                 fix_action=lambda: os.remove('/useremain/rinkhals/.disable-rinkhals')
             )
 
@@ -614,15 +614,15 @@ class Diagnostic:
                     if 'Rinkhals/begin' not in script_content:
                         yield Diagnostic(
                             type=DiagnosticType.WARNING,
-                            short_text='Rinkhals startup issue',
-                            long_text='Rinkhals launcher is missing',
+                            short_text='Rinkhals 啟動異常',
+                            long_text='缺少 Rinkhals 啟動器',
                             fix_action=DiagnosticFixes.REINSTALL_RINKHALS_LAUNCHER
                         )
                     if '\r\n' in script_content:
                         yield Diagnostic(
                             type=DiagnosticType.ERROR,
-                            short_text='Firmware startup issue',
-                            long_text='Kobra startup script has been altered',
+                            short_text='韌體啟動異常',
+                            long_text='Kobra 啟動指令碼已被修改',
                             fix_action=DiagnosticFixes.REINSTALL_FIRMWARE
                         )
 
@@ -630,8 +630,8 @@ class Diagnostic:
             if not os.path.exists('/useremain/rinkhals/start-rinkhals.sh'):
                 yield Diagnostic(
                     type=DiagnosticType.WARNING,
-                    short_text='Rinkhals startup issue',
-                    long_text='Rinkhals startup script is missing',
+                    short_text='Rinkhals 啟動異常',
+                    long_text='缺少 Rinkhals 啟動指令碼',
                     fix_action=DiagnosticFixes.REINSTALL_RINKHALS
                 )
 
@@ -650,18 +650,18 @@ class Diagnostic:
             yield Diagnostic(
                 type=DiagnosticType.INFO,
                 short_text='Sample info diagnostic',
-                long_text='You have printer configuration customizations'
+                long_text='印表機有自訂設定'
             )
             yield Diagnostic(
                 type=DiagnosticType.WARNING,
                 short_text='Sample super long super long super long super long super long super long super long super long warning diagnostic',
-                long_text='You have printer configuration customizations',
+                long_text='印表機有自訂設定',
                 fix_action=DiagnosticFixes.RESET_CONFIGURATION
             )
             yield Diagnostic(
                 type=DiagnosticType.ERROR,
                 short_text='Sample error diagnostic',
-                long_text='You have printer configuration customizations',
+                long_text='印表機有自訂設定',
                 fix_action=DiagnosticFixes.REINSTALL_RINKHALS
             )
 
@@ -922,7 +922,7 @@ class BaseApp:
         self.root_modal.clear_event_cb()
         self.root_modal.add_flag(lv.OBJ_FLAG.HIDDEN)
 
-    def show_text_dialog(self, text, action='OK', action_color=None, callback=None):
+    def show_text_dialog(self, text, action='確定', action_color=None, callback=None):
         def action_callback(callback=callback):
             if callback:
                 callback()
@@ -947,7 +947,7 @@ class BaseApp:
 
         self.modal_dialog.panel_qrcode.remove_flag(lv.OBJ_FLAG.HIDDEN)
         self.modal_dialog.qrcode.update(content)
-        self.modal_dialog.button_action.set_text('OK')
+        self.modal_dialog.button_action.set_text('確定')
         self.modal_dialog.button_action.set_style_text_color(lvr.COLOR_TEXT, lv.STATE.DEFAULT)
         self.modal_dialog.button_action.clear_event_cb()
         self.modal_dialog.button_action.add_event_cb(lambda e: self.hide_modal(), lv.EVENT_CODE.CLICKED, None)
@@ -967,7 +967,7 @@ class BaseApp:
         title_bar.set_y(-lvr.get_title_bar_height())
         
         title = lvr.title(title_bar)
-        title.set_text('Install & Updates')
+        title.set_text('安裝與更新')
         title.center()
 
         icon_back = lvr.button_icon(title_bar)
@@ -1012,7 +1012,7 @@ class BaseApp:
                 panel_current.set_style_pad_hor(0, lv.STATE.DEFAULT)
 
                 label_current = lvr.label(panel_current)
-                label_current.set_text('Current version')
+                label_current.set_text('目前版本')
                 label_current.align(lv.ALIGN.LEFT_MID, lvr.get_global_margin(), 0)
 
                 self.screen_ota.label_rinkhals_current_value = lvr.label(panel_current)
@@ -1026,7 +1026,7 @@ class BaseApp:
                 panel_latest.set_style_pad_hor(0, lv.STATE.DEFAULT)
 
                 label_latest = lvr.label(panel_latest)
-                label_latest.set_text('Latest version')
+                label_latest.set_text('最新版本')
                 label_latest.align(lv.ALIGN.LEFT_MID, lvr.get_global_margin(), 0)
 
                 self.screen_ota.label_rinkhals_latest_value = lvr.label(panel_latest)
@@ -1037,11 +1037,11 @@ class BaseApp:
             panel_actions = lvr.panel(panel_rinkhals, lv.FLEX_FLOW.ROW)
             if panel_actions:
                 self.screen_ota.button_rinkhals_manage = lvr.button(panel_actions)
-                self.screen_ota.button_rinkhals_manage.set_text('Manage')
+                self.screen_ota.button_rinkhals_manage.set_text('管理')
                 self.screen_ota.button_rinkhals_manage.add_event_cb(lambda e: self.show_screen(self.screen_ota_rinkhals), lv.EVENT_CODE.CLICKED, None)
                 
                 self.screen_ota.button_rinkhals_refresh = lvr.button(panel_actions)
-                self.screen_ota.button_rinkhals_refresh.set_text('Refresh')
+                self.screen_ota.button_rinkhals_refresh.set_text('重新整理')
 
         panel_firmware = lvr.panel(panel_ota)
         if panel_firmware:
@@ -1066,7 +1066,7 @@ class BaseApp:
                 panel_current.set_style_pad_hor(0, lv.STATE.DEFAULT)
 
                 label_current = lvr.label(panel_current)
-                label_current.set_text('Current version')
+                label_current.set_text('目前版本')
                 label_current.align(lv.ALIGN.LEFT_MID, lvr.get_global_margin(), 0)
 
                 self.screen_ota.label_firmware_current_value = lvr.label(panel_current)
@@ -1080,7 +1080,7 @@ class BaseApp:
                 panel_latest.set_style_pad_hor(0, lv.STATE.DEFAULT)
 
                 label_latest = lvr.label(panel_latest)
-                label_latest.set_text('Latest version')
+                label_latest.set_text('最新版本')
                 label_latest.align(lv.ALIGN.LEFT_MID, lvr.get_global_margin(), 0)
 
                 self.screen_ota.label_firmware_latest_value = lvr.label(panel_latest)
@@ -1091,11 +1091,11 @@ class BaseApp:
             panel_actions = lvr.panel(panel_firmware, lv.FLEX_FLOW.ROW)
             if panel_actions:
                 self.screen_ota.button_firmware_manage = lvr.button(panel_actions)
-                self.screen_ota.button_firmware_manage.set_text('Manage')
+                self.screen_ota.button_firmware_manage.set_text('管理')
                 self.screen_ota.button_firmware_manage.add_event_cb(lambda e: self.show_screen(self.screen_ota_firmware), lv.EVENT_CODE.CLICKED, None)
                 
                 self.screen_ota.button_firmware_refresh = lvr.button(panel_actions)
-                self.screen_ota.button_firmware_refresh.set_text('Refresh')
+                self.screen_ota.button_firmware_refresh.set_text('重新整理')
     def layout_ota_rinkhals(self):
         self.screen_ota_rinkhals = lvr.panel(self.root_screen, tag='screen_ota_rinkhals')
         if self.screen_ota_rinkhals:
@@ -1110,7 +1110,7 @@ class BaseApp:
             title_bar.set_y(-lvr.get_title_bar_height())
             
             title = lvr.title(title_bar)
-            title.set_text('Manage Rinkhals')
+            title.set_text('管理 Rinkhals')
             title.center()
 
             icon_back = lvr.button_icon(title_bar)
@@ -1127,7 +1127,7 @@ class BaseApp:
             panel_include_test.set_style_border_side(lv.BORDER_SIDE.BOTTOM, lv.STATE.DEFAULT)
 
             label_include_test = lvr.label(panel_include_test)
-            label_include_test.set_text('Include test versions')
+            label_include_test.set_text('顯示測試版')
             label_include_test.set_align(lv.ALIGN.LEFT_MID)
 
             self.screen_ota_rinkhals.checkbox_include_test = lvr.checkbox(panel_include_test)
@@ -1153,7 +1153,7 @@ class BaseApp:
             title_bar.set_y(-lvr.get_title_bar_height())
             
             title = lvr.title(title_bar)
-            title.set_text('Manage firmware')
+            title.set_text('管理韌體')
             title.center()
 
             icon_back = lvr.button_icon(title_bar)
@@ -1216,7 +1216,7 @@ class BaseApp:
             self.modal_ota_rinkhals.obj_progress_bar.set_size(lv.pct(24), lv.pct(100))
 
             self.modal_ota_rinkhals.label_progress_text = lvr.label(self.modal_ota_rinkhals.panel_progress)
-            self.modal_ota_rinkhals.label_progress_text.set_text('Ready')
+            self.modal_ota_rinkhals.label_progress_text.set_text('準備就緒')
 
             panel_actions = lvr.panel(self.modal_ota_rinkhals)
             panel_actions.set_width(lv.pct(100))
@@ -1229,12 +1229,12 @@ class BaseApp:
             self.modal_ota_rinkhals.button_uninstall = lvr.button(panel_actions)
             self.modal_ota_rinkhals.button_uninstall.set_width(lv.pct(45))
             self.modal_ota_rinkhals.button_uninstall.set_style_text_color(lvr.COLOR_DANGER, lv.STATE.DEFAULT)
-            self.modal_ota_rinkhals.button_uninstall.set_text('Uninstall')
+            self.modal_ota_rinkhals.button_uninstall.set_text('解除安裝')
             self.modal_ota_rinkhals.button_uninstall.add_flag(lv.OBJ_FLAG.HIDDEN)
 
             self.modal_ota_rinkhals.button_action = lvr.button(panel_actions)
             self.modal_ota_rinkhals.button_action.set_width(lv.pct(45))
-            self.modal_ota_rinkhals.button_action.set_text('Download')
+            self.modal_ota_rinkhals.button_action.set_text('下載')
     def layout_ota_firmware(self):
         self.screen_ota_firmware = lvr.panel(self.root_screen, tag='screen_ota_firmware')
         if self.screen_ota_firmware:
@@ -1249,7 +1249,7 @@ class BaseApp:
             title_bar.set_y(-lvr.get_title_bar_height())
             
             title = lvr.title(title_bar)
-            title.set_text('Manage firmware')
+            title.set_text('管理韌體')
             title.center()
 
             icon_back = lvr.button_icon(title_bar)
@@ -1312,7 +1312,7 @@ class BaseApp:
             self.modal_ota_firmware.obj_progress_bar.set_size(lv.pct(24), lv.pct(100))
 
             self.modal_ota_firmware.label_progress_text = lvr.label(self.modal_ota_firmware.panel_progress)
-            self.modal_ota_firmware.label_progress_text.set_text('Ready')
+            self.modal_ota_firmware.label_progress_text.set_text('準備就緒')
 
             panel_actions = lvr.panel(self.modal_ota_firmware)
             panel_actions.set_width(lv.pct(100))
@@ -1324,16 +1324,16 @@ class BaseApp:
 
             self.modal_ota_firmware.button_cancel = lvr.button(panel_actions)
             self.modal_ota_firmware.button_cancel.set_width(lv.pct(30))
-            self.modal_ota_firmware.button_cancel.set_text('Cancel')
+            self.modal_ota_firmware.button_cancel.set_text('取消')
             self.modal_ota_firmware.button_cancel.add_event_cb(lambda e: self.hide_modal(), lv.EVENT_CODE.CLICKED, None)
             
             self.modal_ota_firmware.button_usb = lvr.button(panel_actions)
             self.modal_ota_firmware.button_usb.set_width(lv.pct(30))
-            self.modal_ota_firmware.button_usb.set_text('To USB')
+            self.modal_ota_firmware.button_usb.set_text('儲存至 USB')
 
             self.modal_ota_firmware.button_action = lvr.button(panel_actions)
             self.modal_ota_firmware.button_action.set_width(lv.pct(30))
-            self.modal_ota_firmware.button_action.set_text('Download')
+            self.modal_ota_firmware.button_action.set_text('下載')
 
     def show_ota(self, force=False):
         def refresh_rinkhals(force):
@@ -1349,7 +1349,7 @@ class BaseApp:
             if rinkhals_current:
                 self.screen_ota.label_rinkhals_current_value.set_text(rinkhals_current.version)
             else:
-                self.screen_ota.label_rinkhals_current_value.set_text('Not found')
+                self.screen_ota.label_rinkhals_current_value.set_text('找不到')
             lv.unlock()
 
             if force or not self.cache_rinkhals_latest:
@@ -1378,7 +1378,7 @@ class BaseApp:
             if firmware_current_version:
                 self.screen_ota.label_firmware_current_value.set_text(firmware_current_version)
             else:
-                self.screen_ota.label_firmware_current_value.set_text('Unknown')
+                self.screen_ota.label_firmware_current_value.set_text('未知')
             lv.unlock()
 
             if force or not self.cache_firmware_latest:
@@ -1388,7 +1388,7 @@ class BaseApp:
             if self.cache_firmware_latest:
                 self.screen_ota.label_firmware_latest_value.set_text(self.cache_firmware_latest.version)
             else:
-                self.screen_ota.label_firmware_latest_value.set_text('Error')
+                self.screen_ota.label_firmware_latest_value.set_text('錯誤')
             lv.unlock()
 
             lv.lock()
@@ -1451,7 +1451,7 @@ class BaseApp:
                     tag_version.remove_flag(lv.OBJ_FLAG.CLICKABLE)
                     tag_version.set_color(lvr.COLOR_PRIMARY)
                     tag_version.set_icon('')
-                    tag_version.set_text('Current')
+                    tag_version.set_text('目前')
                 elif any([ i for i in rinkhals_installed if v.version == i.version ]):
                     if not v.test:
                         latest_done = True
@@ -1461,7 +1461,7 @@ class BaseApp:
                     tag_version.remove_flag(lv.OBJ_FLAG.CLICKABLE)
                     tag_version.set_color(lvr.COLOR_PRIMARY)
                     tag_version.set_icon('')
-                    tag_version.set_text('Installed')
+                    tag_version.set_text('已安裝')
                 elif v.test and not test_done:
                     test_done = True
 
@@ -1470,7 +1470,7 @@ class BaseApp:
                     tag_version.remove_flag(lv.OBJ_FLAG.CLICKABLE)
                     tag_version.set_color(lv.color_make(200, 130, 0))
                     tag_version.set_icon('')
-                    tag_version.set_text('Test')
+                    tag_version.set_text('測試版')
                 elif not v.test and not latest_done:
                     latest_done = True
 
@@ -1479,7 +1479,7 @@ class BaseApp:
                     tag_version.remove_flag(lv.OBJ_FLAG.CLICKABLE)
                     tag_version.set_color(lv.color_make(0, 180, 0))
                     tag_version.set_icon('')
-                    tag_version.set_text('Latest')
+                    tag_version.set_text('最新')
 
                 lv.unlock()
         def checkbox_include_test_cb(e):
@@ -1548,7 +1548,7 @@ class BaseApp:
                     label_date.set_align(lv.ALIGN.BOTTOM_LEFT)
                     label_date.set_style_text_color(lvr.COLOR_DISABLED, lv.STATE.DEFAULT)
                     from datetime import datetime
-                    label_date.set_text(f'Date: {datetime.fromtimestamp(v.date).strftime("%Y-%m-%d")}')
+                    label_date.set_text(f'日期：{datetime.fromtimestamp(v.date).strftime("%Y-%m-%d")}')
 
                 if firmware_current and v.version == firmware_current:
                     latest_done = True
@@ -1558,7 +1558,7 @@ class BaseApp:
                     tag_version.remove_flag(lv.OBJ_FLAG.CLICKABLE)
                     tag_version.set_color(lvr.COLOR_PRIMARY)
                     tag_version.set_icon('')
-                    tag_version.set_text('Current')
+                    tag_version.set_text('目前')
                 elif not latest_done:
                     latest_done = True
 
@@ -1567,7 +1567,7 @@ class BaseApp:
                     tag_version.remove_flag(lv.OBJ_FLAG.CLICKABLE)
                     tag_version.set_color(lv.color_make(0, 180, 0))
                     tag_version.set_icon('')
-                    tag_version.set_text('Latest')
+                    tag_version.set_text('最新')
 
                 lv.unlock()
 
@@ -1603,22 +1603,22 @@ class BaseApp:
                 version.path = v.path
                 break
 
-        action_text = 'Install'
+        action_text = '安裝'
         warning_text = None
         action_uninstall = False
 
         if rinkhals_current and version.version == rinkhals_current.version:
-            action_text = 'Re-install'
+            action_text = '重新安裝'
             action_uninstall = True
         elif any([ v for v in rinkhals_installed if version.version == v.version ]):
-            action_text = 'Re-install'
+            action_text = '重新安裝'
             action_uninstall = True
         elif version.test:
-            warning_text = 'This is a test version, it might not be completely stable'
+            warning_text = '這是測試版，可能不夠穩定'
         elif rinkhals_current and version.version < rinkhals_current.version:
-            warning_text = 'This version is older than the currently installed one'
+            warning_text = '此版本比目前安裝的版本舊'
         elif rinkhals_current and version.version > rinkhals_current.version:
-            action_text = 'Upgrade'
+            action_text = '升級'
 
         if warning_text:
             self.modal_ota_rinkhals.label_warning.set_text(warning_text)
@@ -1638,7 +1638,7 @@ class BaseApp:
                 self.modal_ota_rinkhals.panel_progress.remove_flag(lv.OBJ_FLAG.HIDDEN)
                 self.modal_ota_rinkhals.obj_progress_bar.set_style_bg_color(lvr.COLOR_PRIMARY, lv.STATE.DEFAULT)
                 self.modal_ota_rinkhals.obj_progress_bar.set_width(lv.pct(0))
-                self.modal_ota_rinkhals.label_progress_text.set_text('Starting...')
+                self.modal_ota_rinkhals.label_progress_text.set_text('正在啟動…')
 
             target_directory = f'{RINKHALS_BASE}/tmp'
             os.makedirs(target_directory, exist_ok=True)
@@ -1680,7 +1680,7 @@ class BaseApp:
 
                 if version.sha256:
                     with lvr.lock():
-                        self.modal_ota_rinkhals.label_progress_text.set_text('Checking...')
+                        self.modal_ota_rinkhals.label_progress_text.set_text('正在檢查…')
 
                     file_sha256 = hash_sha256(target_path)
                     if file_sha256 != version.sha256:
@@ -1688,7 +1688,7 @@ class BaseApp:
 
                 with lvr.lock():
                     self.modal_ota_rinkhals.obj_progress_bar.set_width(lv.pct(100))
-                    self.modal_ota_rinkhals.label_progress_text.set_text('Ready to install')
+                    self.modal_ota_rinkhals.label_progress_text.set_text('可開始安裝')
                     self.modal_ota_rinkhals.button_action.set_text(action_text)
                     self.modal_ota_rinkhals.button_action.set_style_text_color(lvr.COLOR_DANGER if warning_text else lvr.COLOR_TEXT, lv.STATE.DEFAULT)
                     self.modal_ota_rinkhals.button_action.clear_event_cb()
@@ -1698,7 +1698,7 @@ class BaseApp:
 
                 with lvr.lock():
                     self.modal_ota_rinkhals.obj_progress_bar.set_style_bg_color(lvr.COLOR_DANGER, lv.STATE.DEFAULT)
-                    self.modal_ota_rinkhals.label_progress_text.set_text('Failed')
+                    self.modal_ota_rinkhals.label_progress_text.set_text('失敗')
                 
             with lvr.lock():
                 self.modal_ota_rinkhals.button_uninstall.set_state(lv.STATE.DISABLED, False)
@@ -1712,7 +1712,7 @@ class BaseApp:
 
                 logging.info(f'Extracting Rinkhals update...')
                 with lvr.lock():
-                    self.modal_ota_rinkhals.label_progress_text.set_text('Extracting...')
+                    self.modal_ota_rinkhals.label_progress_text.set_text('正在解壓縮…')
 
                 if USING_SIMULATOR:
                     time.sleep(1)
@@ -1722,7 +1722,7 @@ class BaseApp:
 
                 logging.info('Starting Rinkhals update...')
                 with lvr.lock():
-                    self.modal_ota_rinkhals.label_progress_text.set_text('Installing...')
+                    self.modal_ota_rinkhals.label_progress_text.set_text('正在安裝…')
 
                 if USING_SIMULATOR:
                     time.sleep(1)
@@ -1730,7 +1730,7 @@ class BaseApp:
                 elif not self.install_swu('async'):
                     lv.lock()
                     self.modal_ota_rinkhals.obj_progress_bar.set_style_bg_color(lvr.COLOR_DANGER, lv.STATE.DEFAULT)
-                    self.modal_ota_rinkhals.label_progress_text.set_text('Installation failed')
+                    self.modal_ota_rinkhals.label_progress_text.set_text('安裝失敗')
                     self.modal_ota_rinkhals.button_action.set_state(lv.STATE.DISABLED, False)
                     self.modal_ota_rinkhals.button_uninstall.set_state(lv.STATE.DISABLED, False)
                     lv.unlock()
@@ -1739,7 +1739,7 @@ class BaseApp:
             
             lv.lock()
             self.modal_ota_rinkhals.obj_progress_bar.set_style_bg_color(lvr.COLOR_DANGER, lv.STATE.DEFAULT)
-            self.modal_ota_rinkhals.label_progress_text.set_text('Extraction failed')
+            self.modal_ota_rinkhals.label_progress_text.set_text('解壓縮失敗')
             self.modal_ota_rinkhals.button_action.set_state(lv.STATE.DISABLED, False)
             self.modal_ota_rinkhals.button_uninstall.set_state(lv.STATE.DISABLED, False)
             lv.unlock()
@@ -1750,7 +1750,7 @@ class BaseApp:
             self.modal_ota_rinkhals.panel_progress.remove_flag(lv.OBJ_FLAG.HIDDEN)
             self.modal_ota_rinkhals.obj_progress_bar.set_style_bg_color(lvr.COLOR_PRIMARY, lv.STATE.DEFAULT)
             self.modal_ota_rinkhals.obj_progress_bar.set_width(lv.pct(0))
-            self.modal_ota_rinkhals.label_progress_text.set_text('Removing files...')
+            self.modal_ota_rinkhals.label_progress_text.set_text('正在移除檔案…')
             self.root_modal.clear_event_cb()
             lv.unlock()
 
@@ -1764,7 +1764,7 @@ class BaseApp:
             self.layout_ota_rinkhals(force=True)
 
         self.modal_ota_rinkhals.panel_progress.add_flag(lv.OBJ_FLAG.HIDDEN)
-        self.modal_ota_rinkhals.button_action.set_text('Download')
+        self.modal_ota_rinkhals.button_action.set_text('下載')
         self.modal_ota_rinkhals.button_action.set_style_text_color(lvr.COLOR_TEXT, lv.STATE.DEFAULT)
         self.modal_ota_rinkhals.button_action.set_state(lv.STATE.DISABLED, False)
         self.modal_ota_rinkhals.button_action.clear_event_cb()
@@ -1787,7 +1787,7 @@ class BaseApp:
 
         firmware_current = Firmware.get_current_version()
         if firmware_current and version.version < firmware_current:
-            warning_test = 'This version is older than the currently installed one'
+            warning_test = '此版本比目前安裝的版本舊'
         else:
             warning_test = None
 
@@ -1804,7 +1804,7 @@ class BaseApp:
             self.modal_ota_firmware.panel_progress.remove_flag(lv.OBJ_FLAG.HIDDEN)
             self.modal_ota_firmware.obj_progress_bar.set_style_bg_color(lvr.COLOR_PRIMARY, lv.STATE.DEFAULT)
             self.modal_ota_firmware.obj_progress_bar.set_width(lv.pct(0))
-            self.modal_ota_firmware.label_progress_text.set_text('Starting...')
+            self.modal_ota_firmware.label_progress_text.set_text('正在啟動…')
             lv.unlock()
 
             printer_info = PrinterInfo.get()
@@ -1815,7 +1815,7 @@ class BaseApp:
                 if not os.path.exists(target_directory) and not USING_SIMULATOR:
                     lv.lock()
                     self.modal_ota_firmware.obj_progress_bar.set_style_bg_color(lvr.COLOR_DANGER, lv.STATE.DEFAULT)
-                    self.modal_ota_firmware.label_progress_text.set_text('No USB Drive attached')
+                    self.modal_ota_firmware.label_progress_text.set_text('未插入 USB 隨身碟')
                     self.modal_ota_firmware.button_action.set_state(lv.STATE.DISABLED, False)
                     self.modal_ota_firmware.button_usb.set_state(lv.STATE.DISABLED, False)
                     lv.unlock()
@@ -1885,15 +1885,15 @@ class BaseApp:
                     system('sync')
                     lv.lock()
                     self.modal_ota_firmware.obj_progress_bar.set_width(lv.pct(100))
-                    self.modal_ota_firmware.label_progress_text.set_text('Saved to USB')
+                    self.modal_ota_firmware.label_progress_text.set_text('已儲存至 USB')
                     self.modal_ota_firmware.button_usb.set_state(lv.STATE.DISABLED, False)
                     self.modal_ota_firmware.button_action.set_state(lv.STATE.DISABLED, False)
                     lv.unlock()
                 else:
                     lv.lock()
                     self.modal_ota_firmware.obj_progress_bar.set_width(lv.pct(100))
-                    self.modal_ota_firmware.label_progress_text.set_text('Ready to install')
-                    self.modal_ota_firmware.button_action.set_text('Install')
+                    self.modal_ota_firmware.label_progress_text.set_text('可開始安裝')
+                    self.modal_ota_firmware.button_action.set_text('安裝')
                     self.modal_ota_firmware.button_action.set_style_text_color(lvr.COLOR_DANGER if warning_test else lvr.COLOR_TEXT, lv.STATE.DEFAULT)
                     self.modal_ota_firmware.button_action.clear_event_cb()
                     self.modal_ota_firmware.button_action.add_event_cb(lambda e: run_async(install_version), lv.EVENT_CODE.CLICKED, None)
@@ -1903,7 +1903,7 @@ class BaseApp:
 
                 lv.lock()
                 self.modal_ota_firmware.obj_progress_bar.set_style_bg_color(lvr.COLOR_DANGER, lv.STATE.DEFAULT)
-                self.modal_ota_firmware.label_progress_text.set_text('Failed')
+                self.modal_ota_firmware.label_progress_text.set_text('失敗')
                 self.modal_ota_firmware.button_action.set_state(lv.STATE.DISABLED, False)
                 self.modal_ota_firmware.button_usb.set_state(lv.STATE.DISABLED, False)
                 lv.unlock()
@@ -1916,7 +1916,7 @@ class BaseApp:
                 lv.lock()
                 self.modal_ota_firmware.button_action.set_state(lv.STATE.DISABLED, True)
                 self.modal_ota_firmware.button_cancel.set_state(lv.STATE.DISABLED, True)
-                self.modal_ota_firmware.label_progress_text.set_text('Extracting...')
+                self.modal_ota_firmware.label_progress_text.set_text('正在解壓縮…')
                 lv.unlock()
 
                 logging.info(f'Extracting system update...')
@@ -1928,7 +1928,7 @@ class BaseApp:
                         break
 
                 lv.lock()
-                self.modal_ota_firmware.label_progress_text.set_text('Installing...')
+                self.modal_ota_firmware.label_progress_text.set_text('正在安裝…')
                 lv.unlock()
 
                 logging.info('Starting system update...')
@@ -1943,7 +1943,7 @@ class BaseApp:
             
             lv.lock()
             self.modal_ota_firmware.obj_progress_bar.set_style_bg_color(lvr.COLOR_DANGER, lv.STATE.DEFAULT)
-            self.modal_ota_firmware.label_progress_text.set_text('Extraction failed')
+            self.modal_ota_firmware.label_progress_text.set_text('解壓縮失敗')
             self.modal_ota_firmware.button_action.set_state(lv.STATE.DISABLED, False)
             self.modal_ota_firmware.button_cancel.set_state(lv.STATE.DISABLED, False)
             lv.unlock()
@@ -1956,7 +1956,7 @@ class BaseApp:
         self.modal_ota_firmware.button_usb.clear_event_cb()
         self.modal_ota_firmware.button_usb.add_event_cb(lambda e: run_async(lambda: download_version('usb')), lv.EVENT_CODE.CLICKED, None)
 
-        self.modal_ota_firmware.button_action.set_text('Download')
+        self.modal_ota_firmware.button_action.set_text('下載')
         self.modal_ota_firmware.button_action.set_state(lv.STATE.DISABLED, False)
         self.modal_ota_firmware.button_action.clear_event_cb()
         self.modal_ota_firmware.button_action.add_event_cb(lambda e: run_async(lambda: download_version('local')), lv.EVENT_CODE.CLICKED, None)

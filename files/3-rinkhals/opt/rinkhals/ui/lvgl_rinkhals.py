@@ -31,9 +31,11 @@ if gradient_background:
     gradient_background.linear_init(lv.pct(0), lv.pct(0), lv.pct(100), lv.pct(50), lv.GRAD_EXTEND.PAD)
 
 # Fonts
-def get_font_text(): return lv.tiny_ttf_create_file(ASSETS_PATH + '/AlibabaSans-Regular.ttf', int(lv.dpx(19)))
-def get_font_title(): return lv.tiny_ttf_create_file(ASSETS_PATH + '/AlibabaSans-Regular.ttf', int(lv.dpx(22)))
-def get_font_subtitle(): return lv.tiny_ttf_create_file(ASSETS_PATH + '/AlibabaSans-Regular.ttf', int(lv.dpx(16)))
+TEXT_FONT = ASSETS_PATH + '/RinkhalsTC-Regular.ttf'
+
+def get_font_text(): return lv.tiny_ttf_create_file(TEXT_FONT, int(lv.dpx(19)))
+def get_font_title(): return lv.tiny_ttf_create_file(TEXT_FONT, int(lv.dpx(22)))
+def get_font_subtitle(): return lv.tiny_ttf_create_file(TEXT_FONT, int(lv.dpx(16)))
 def get_font_icon(): return lv.tiny_ttf_create_file(ASSETS_PATH + '/MaterialIcons-Regular.ttf', int(lv.dpx(32)))
 def get_font_icon_small(): return lv.tiny_ttf_create_file(ASSETS_PATH + '/MaterialIcons-Regular.ttf', int(lv.dpx(20)))
 

@@ -213,16 +213,16 @@ class RinkhalsUiApp(BaseApp):
             label_rinkhals.set_style_pad_bottom(lv.dpx(10), lv.STATE.DEFAULT)
             
             self.screen_logo.label_model = lvr.subtitle(self.screen_logo)
-            self.screen_logo.label_model.set_text('Model:')
+            self.screen_logo.label_model.set_text('型號：')
 
             self.screen_logo.label_firmware = lvr.subtitle(self.screen_logo)
-            self.screen_logo.label_firmware.set_text('Firmware:')
+            self.screen_logo.label_firmware.set_text('韌體：')
 
             self.screen_logo.label_version = lvr.subtitle(self.screen_logo)
-            self.screen_logo.label_version.set_text('Version:')
+            self.screen_logo.label_version.set_text('版本：')
                         
             self.screen_logo.label_disk = lvr.subtitle(self.screen_logo)
-            self.screen_logo.label_disk.set_text('Disk usage: ?')
+            self.screen_logo.label_disk.set_text('儲存空間用量：未知')
 
             button_exit = lvr.button_icon(self.screen_logo)
             button_exit.add_flag(lv.OBJ_FLAG.IGNORE_LAYOUT)
@@ -243,12 +243,12 @@ class RinkhalsUiApp(BaseApp):
 
             button_apps = lvr.button(panel_row1)
             button_apps.set_flex_grow(1)
-            button_apps.set_text('Manage apps')
+            button_apps.set_text('管理應用程式')
             button_apps.add_event_cb(lambda e: self.show_screen(self.screen_apps), lv.EVENT_CODE.CLICKED, None)
 
             button_store = lvr.button(panel_row1)
             button_store.set_flex_grow(1)
-            button_store.set_text('App Store')
+            button_store.set_text('應用程式商店')
             button_store.add_event_cb(lambda e: self.show_screen(self.screen_store), lv.EVENT_CODE.CLICKED, None)
 
             # Bottom row: Updates | Settings
@@ -259,12 +259,12 @@ class RinkhalsUiApp(BaseApp):
 
             button_ota = lvr.button(panel_row2)
             button_ota.set_flex_grow(1)
-            button_ota.set_text('Updates')
+            button_ota.set_text('更新')
             button_ota.add_event_cb(lambda e: self.show_screen(self.screen_ota), lv.EVENT_CODE.CLICKED, None)
 
             button_settings = lvr.button(panel_row2)
             button_settings.set_flex_grow(1)
-            button_settings.set_text('Settings')
+            button_settings.set_text('設定')
             button_settings.set_style_text_color(lvr.COLOR_DANGER, lv.STATE.DEFAULT)
             button_settings.add_event_cb(lambda e: self.show_screen(self.screen_advanced), lv.EVENT_CODE.CLICKED, None)
 
@@ -288,7 +288,7 @@ class RinkhalsUiApp(BaseApp):
                 title_bar.set_y(-lvr.get_title_bar_height())
                 
                 title = lvr.title(title_bar)
-                title.set_text('Manage apps')
+                title.set_text('管理應用程式')
                 title.center()
 
                 icon_back = lvr.button_icon(title_bar)
@@ -330,7 +330,7 @@ class RinkhalsUiApp(BaseApp):
                 panel_app.set_size(lv.pct(100), lv.pct(100))
 
                 self.screen_app.label_version = lvr.subtitle(panel_app)
-                self.screen_app.label_version.set_text('Version:')
+                self.screen_app.label_version.set_text('版本：')
                 self.screen_app.label_version.set_style_margin_ver(-lvr.get_global_margin() - lv.dpx(2), lv.STATE.DEFAULT)
                 
                 self.screen_app.label_path = lvr.subtitle(panel_app)
@@ -356,7 +356,7 @@ class RinkhalsUiApp(BaseApp):
                 panel_disk.set_style_pad_all(0, lv.STATE.DEFAULT)
 
                 label_disk_subtitle = lvr.subtitle(panel_disk)
-                label_disk_subtitle.set_text('Disk')
+                label_disk_subtitle.set_text('儲存空間')
                 
                 self.screen_app.label_disk = lvr.label(panel_disk)
                 self.screen_app.label_disk.set_text('?')
@@ -367,7 +367,7 @@ class RinkhalsUiApp(BaseApp):
                 panel_memory.set_style_pad_all(0, lv.STATE.DEFAULT)
 
                 label_memory_subtitle = lvr.subtitle(panel_memory)
-                label_memory_subtitle.set_text('Memory')
+                label_memory_subtitle.set_text('記憶體')
                 
                 self.screen_app.label_memory = lvr.label(panel_memory)
                 self.screen_app.label_memory.set_text('?')
@@ -398,11 +398,11 @@ class RinkhalsUiApp(BaseApp):
                 self.screen_app.button_settings.set_icon('')
 
                 self.screen_app.button_toggle_enabled = lvr.button(panel_actions)
-                self.screen_app.button_toggle_enabled.set_text('Enable/Disable app')
+                self.screen_app.button_toggle_enabled.set_text('啟用／停用')
                 self.screen_app.button_toggle_enabled.set_flex_grow(1)
                 
                 self.screen_app.button_toggle_started = lvr.button(panel_app)
-                self.screen_app.button_toggle_started.set_text('Start/Stop app')
+                self.screen_app.button_toggle_started.set_text('啟動／停止')
                 self.screen_app.button_toggle_started.set_width(lv.pct(100))
 
         with lvr.lock():
@@ -447,7 +447,7 @@ class RinkhalsUiApp(BaseApp):
                 icon_back.add_event_cb(lambda e: self.show_screen(self.screen_main), lv.EVENT_CODE.CLICKED, None)
                 
                 title = lvr.title(title_bar)
-                title.set_text('Settings')
+                title.set_text('設定')
                 title.center()
 
                 panel_buttons = lvr.panel(self.screen_advanced, flex_flow=lv.FLEX_FLOW.COLUMN)
@@ -461,7 +461,7 @@ class RinkhalsUiApp(BaseApp):
 
                 label_sounds = lvr.button(panel_sounds)
                 label_sounds.set_width(lv.pct(100))
-                label_sounds.set_text('Sounds')
+                label_sounds.set_text('音效')
                 label_sounds.set_style_pad_left(lv.dpx(15), lv.STATE.DEFAULT)
                 label_sounds.set_style_pad_right(lv.dpx(4), lv.STATE.DEFAULT)
                 label_sounds.set_style_text_align(lv.TEXT_ALIGN.LEFT, lv.STATE.DEFAULT)
@@ -485,24 +485,24 @@ class RinkhalsUiApp(BaseApp):
 
                 button_reboot = lvr.button(panel_buttons)
                 button_reboot.set_width(lv.pct(100))
-                button_reboot.set_text('Reboot printer')
-                button_reboot.add_event_cb(lambda e: self.show_text_dialog('Are you sure you want\nto reboot your printer?', action='Yes', callback=lambda: self.reboot_printer()), lv.EVENT_CODE.CLICKED, None)
+                button_reboot.set_text('重新啟動印表機')
+                button_reboot.add_event_cb(lambda e: self.show_text_dialog('確定要重新啟動印表機嗎？', action='確認', callback=lambda: self.reboot_printer()), lv.EVENT_CODE.CLICKED, None)
                 
                 button_restart = lvr.button(panel_buttons)
                 button_restart.set_width(lv.pct(100))
-                button_restart.set_text('Restart Rinkhals')
-                button_restart.add_event_cb(lambda e: self.show_text_dialog('Are you sure you want\nto restart Rinkhals?', action='Yes', callback=lambda: self.restart_rinkhals()), lv.EVENT_CODE.CLICKED, None)
+                button_restart.set_text('重新啟動 Rinkhals')
+                button_restart.add_event_cb(lambda e: self.show_text_dialog('確定要重新啟動 Rinkhals 嗎？', action='確認', callback=lambda: self.restart_rinkhals()), lv.EVENT_CODE.CLICKED, None)
                 
                 button_stock = lvr.button(panel_buttons)
                 button_stock.set_width(lv.pct(100))
-                button_stock.set_text('Switch to stock')
-                button_stock.add_event_cb(lambda e: self.show_text_dialog('Are you sure you want\nto switch to stock firmware?\n\nYou can reboot your printer\nto start Rinkhals again', action='Yes', callback=lambda: self.stop_rinkhals()), lv.EVENT_CODE.CLICKED, None)
+                button_stock.set_text('切換至原廠韌體')
+                button_stock.add_event_cb(lambda e: self.show_text_dialog('確定要切換至原廠韌體嗎？\n\n重新啟動印表機即可再次啟動 Rinkhals。', action='確認', callback=lambda: self.stop_rinkhals()), lv.EVENT_CODE.CLICKED, None)
 
                 button_disable = lvr.button(panel_buttons)
                 button_disable.set_width(lv.pct(100))
                 button_disable.set_style_text_color(lvr.COLOR_DANGER, lv.STATE.DEFAULT)
-                button_disable.set_text('Disable Rinkhals')
-                button_disable.add_event_cb(lambda e: self.show_text_dialog('Are you sure you want\nto disable Rinkhals?\n\nYou will need to reinstall\nRinkhals to start it again', action='Yes', action_color=lvr.COLOR_DANGER, callback=lambda: self.disable_rinkhals()), lv.EVENT_CODE.CLICKED, None)
+                button_disable.set_text('停用 Rinkhals')
+                button_disable.add_event_cb(lambda e: self.show_text_dialog('確定要停用 Rinkhals 嗎？\n\n之後須重新安裝 Rinkhals 才能再次啟動。', action='確認', action_color=lvr.COLOR_DANGER, callback=lambda: self.disable_rinkhals()), lv.EVENT_CODE.CLICKED, None)
 
         with lvr.lock():
             self.layout_ota()
@@ -536,14 +536,14 @@ class RinkhalsUiApp(BaseApp):
         elif screen == self.screen_apps: self.show_apps()
         elif screen == self.screen_store: self.show_app_store()
     def show_main(self):
-        self.screen_logo.label_model.set_text(f'Model: {KOBRA_MODEL}')
-        self.screen_logo.label_firmware.set_text(f'Firmware: {KOBRA_VERSION}')
-        self.screen_logo.label_version.set_text(f'Version: {RINKHALS_VERSION}')
-        self.screen_logo.label_disk.set_text(f'Disk usage: ?')
+        self.screen_logo.label_model.set_text(f'型號：{KOBRA_MODEL}')
+        self.screen_logo.label_firmware.set_text(f'韌體：{KOBRA_VERSION}')
+        self.screen_logo.label_version.set_text(f'版本：{RINKHALS_VERSION}')
+        self.screen_logo.label_disk.set_text(f'儲存空間用量：?')
 
         def update_disk_usage(result):
             lv.lock()
-            self.screen_logo.label_disk.set_text(f'Disk usage: {result}')
+            self.screen_logo.label_disk.set_text(f'儲存空間用量：{result}')
             lv.unlock()
 
         if USING_SHELL:
@@ -634,7 +634,7 @@ class RinkhalsUiApp(BaseApp):
         app_properties = app_manifest.get('properties', []) if app_manifest else []
 
         self.screen_app.label_title.set_text(ellipsis(app_name, 24))
-        self.screen_app.label_version.set_text(f'Version: {app_version}')
+        self.screen_app.label_version.set_text(f'版本：{app_version}')
         self.screen_app.label_path.set_text(ellipsis(app_root, 36))
         self.screen_app.label_description.set_text(app_description)
         self.screen_app.label_disk.set_text('-')
@@ -667,7 +667,7 @@ class RinkhalsUiApp(BaseApp):
             
             # Update the enable app button
             with lvr.lock():
-                self.screen_app.button_toggle_enabled.set_text('Disable app' if app_enabled else 'Enable app')
+                self.screen_app.button_toggle_enabled.set_text('停用' if app_enabled else '啟用')
                 self.screen_app.button_toggle_enabled.clear_event_cb()
                 if app_enabled:
                     self.screen_app.button_toggle_enabled.add_event_cb(lambda e, app=app: self.disable_app(app), lv.EVENT_CODE.CLICKED, app)
@@ -676,7 +676,7 @@ class RinkhalsUiApp(BaseApp):
         
             # Update the start app button
             with lvr.lock():
-                self.screen_app.button_toggle_started.set_text('Stop app' if app_started else 'Start app')
+                self.screen_app.button_toggle_started.set_text('停止' if app_started else '啟動')
                 self.screen_app.button_toggle_started.set_style_text_color(lvr.COLOR_DANGER if app_started else lvr.COLOR_TEXT, lv.STATE.DEFAULT)
                 self.screen_app.button_toggle_started.clear_event_cb()
                 if app_started:
@@ -887,7 +887,7 @@ class RinkhalsUiApp(BaseApp):
         button_reset = lvr.button(self.screen_app_settings.panel_properties)
         button_reset.set_style_margin_all(lvr.get_global_margin(), lv.STATE.DEFAULT)
         button_reset.set_width(lv.pct(100))
-        button_reset.set_text('Reset to default')
+        button_reset.set_text('重設為預設值')
         button_reset.add_event_cb(lambda e: reset_default(), lv.EVENT_CODE.CLICKED, None)
         
     def show_input_text_dialog(self, title, initial_value, is_number, select_callback=None):
@@ -967,7 +967,7 @@ class RinkhalsUiApp(BaseApp):
         self.modal_selection.panel_selection.set_flex_align(lv.FLEX_ALIGN.CENTER, lv.FLEX_ALIGN.CENTER, lv.FLEX_ALIGN.CENTER)
 
         label_title = lvr.title(self.modal_selection.panel_selection)
-        label_title.set_text('Select an option')
+        label_title.set_text('選擇項目')
         label_title.set_align(lv.ALIGN.TOP_MID)
         label_title.set_style_margin_bottom(lvr.get_global_margin(), lv.STATE.DEFAULT)
 
@@ -1108,7 +1108,7 @@ class RinkhalsUiApp(BaseApp):
         panel_message.set_style_bg_opa(lv.OPA.COVER, lv.STATE.DEFAULT)
 
         label_text = lvr.label(panel_message)
-        label_text.set_text('\n\nRinkhals has now reached 1000 community members and 256 GitHub stars.\nThank you for your interest in this project!\nHave fun priting :) Julien\n')
+        label_text.set_text('\n\nRinkhals 社群已有 1,000 名成員，並在 GitHub 獲得 256 顆星。\n感謝你對本專案的支持！\n祝你列印愉快 :) Julien\n')
         label_text.set_width(lv.pct(100))
         label_text.set_style_text_font(lvr.get_font_subtitle(), lv.STATE.DEFAULT)
         label_text.set_long_mode(lv.LABEL_LONG_MODE.WRAP)
@@ -1120,7 +1120,7 @@ class RinkhalsUiApp(BaseApp):
             panel_message.delete()
 
         button_close = lvr.button(panel_message)
-        button_close.set_text('Yay! Let me print now!')
+        button_close.set_text('開始列印吧！')
         button_close.add_event_cb(close_fireworks, lv.EVENT_CODE.CLICKED, None)
         button_close.set_style_margin_bottom(lv.dpx(15), lv.STATE.DEFAULT)
 
@@ -1201,7 +1201,7 @@ class RinkhalsUiApp(BaseApp):
             title_bar.set_y(-lvr.get_title_bar_height())
 
             title = lvr.title(title_bar)
-            title.set_text('App Store')
+            title.set_text('應用程式商店')
             title.center()
 
             icon_back = lvr.button_icon(title_bar)
@@ -1239,7 +1239,7 @@ class RinkhalsUiApp(BaseApp):
             panel_app.set_size(lv.pct(100), lv.pct(100))
 
             self.screen_store_app.label_version = lvr.subtitle(panel_app)
-            self.screen_store_app.label_version.set_text('Version:')
+            self.screen_store_app.label_version.set_text('版本：')
             self.screen_store_app.label_version.set_style_margin_ver(-lvr.get_global_margin() - lv.dpx(2), lv.STATE.DEFAULT)
 
             self.screen_store_app.label_description = lvr.subtitle(panel_app)
@@ -1250,7 +1250,7 @@ class RinkhalsUiApp(BaseApp):
 
             self.screen_store_app.button_action = lvr.button(panel_app)
             self.screen_store_app.button_action.set_width(lv.pct(100))
-            self.screen_store_app.button_action.set_text('Install')
+            self.screen_store_app.button_action.set_text('安裝')
 
         # Install progress modal
         self.modal_store_install = lvr.modal(self.root_modal, tag='modal_store_install')
@@ -1291,12 +1291,12 @@ class RinkhalsUiApp(BaseApp):
 
             self.modal_store_install.button_cancel = lvr.button(panel_actions)
             self.modal_store_install.button_cancel.set_width(lv.pct(45))
-            self.modal_store_install.button_cancel.set_text('Cancel')
+            self.modal_store_install.button_cancel.set_text('取消')
             self.modal_store_install.button_cancel.add_event_cb(lambda e: self.hide_modal(), lv.EVENT_CODE.CLICKED, None)
 
             self.modal_store_install.button_done = lvr.button(panel_actions)
             self.modal_store_install.button_done.set_width(lv.pct(45))
-            self.modal_store_install.button_done.set_text('Done')
+            self.modal_store_install.button_done.set_text('完成')
             self.modal_store_install.button_done.add_flag(lv.OBJ_FLAG.HIDDEN)
             self.modal_store_install.button_done.add_event_cb(lambda e: self.hide_modal(), lv.EVENT_CODE.CLICKED, None)
 
@@ -1334,7 +1334,7 @@ class RinkhalsUiApp(BaseApp):
         self.screen_store.panel_apps.set_size(lv.pct(100), lv.pct(100))
 
         label_loading = lvr.subtitle(self.screen_store.panel_apps)
-        label_loading.set_text('Loading...')
+        label_loading.set_text('載入中…')
         label_loading.set_style_text_align(lv.TEXT_ALIGN.CENTER, lv.STATE.DEFAULT)
         label_loading.center()
 
@@ -1346,9 +1346,9 @@ class RinkhalsUiApp(BaseApp):
                 response = requests.get(api_url, headers=api_headers, timeout=10)
                 if response.status_code != 200:
                     if response.status_code == 403 and response.headers.get('X-RateLimit-Remaining') == '0':
-                        msg = 'Rate limit exceeded\nTry again in a few minutes'
+                        msg = '已達請求次數上限\n請稍候幾分鐘再試'
                     else:
-                        msg = f'Failed to load ({response.status_code})'
+                        msg = f'載入失敗（{response.status_code}）'
                     with lvr.lock():
                         label_loading.set_text(msg)
                     return
@@ -1403,12 +1403,12 @@ class RinkhalsUiApp(BaseApp):
                             label_installed = lvr.subtitle(panel_app)
                             label_installed.set_align(lv.ALIGN.RIGHT_MID)
                             label_installed.set_style_text_color(lvr.COLOR_PRIMARY, lv.STATE.DEFAULT)
-                            label_installed.set_text('Update' if update_available else 'Installed')
+                            label_installed.set_text('更新' if update_available else '已安裝')
 
             except Exception as ex:
                 logging.error(f'App store fetch failed: {ex}')
                 with lvr.lock():
-                    label_loading.set_text(f'Error loading apps')
+                    label_loading.set_text(f'無法載入應用程式')
 
         run_async(fetch_apps)
 
@@ -1423,9 +1423,9 @@ class RinkhalsUiApp(BaseApp):
 
         self.screen_store_app.label_title.set_text(ellipsis(app_name, 24))
         if update_available:
-            self.screen_store_app.label_version.set_text(f'Version: {installed_version} -> {app_version}')
+            self.screen_store_app.label_version.set_text(f'版本：{installed_version} -> {app_version}')
         else:
-            self.screen_store_app.label_version.set_text(f'Version: {app_version}' if app_version else '')
+            self.screen_store_app.label_version.set_text(f'版本：{app_version}' if app_version else '')
         self.screen_store_app.label_description.set_text(app_description)
 
         self.screen_store_app.button_action.clear_event_cb()
@@ -1434,26 +1434,26 @@ class RinkhalsUiApp(BaseApp):
             # Single action button, so Update takes priority over Remove while an
             # update is pending. Reinstalling the SWU upgrades in place; the
             # button reverts to Remove once installed == available.
-            self.screen_store_app.button_action.set_text('Update')
+            self.screen_store_app.button_action.set_text('更新')
             self.screen_store_app.button_action.set_style_text_color(lvr.COLOR_PRIMARY, lv.STATE.DEFAULT)
             self.screen_store_app.button_action.add_event_cb(
                 lambda e, d=app_dir, n=app_name: self.install_store_app(d, n),
                 lv.EVENT_CODE.CLICKED, None
             )
         elif is_installed:
-            self.screen_store_app.button_action.set_text('Remove')
+            self.screen_store_app.button_action.set_text('移除')
             self.screen_store_app.button_action.set_style_text_color(lvr.COLOR_DANGER, lv.STATE.DEFAULT)
             self.screen_store_app.button_action.add_event_cb(
                 lambda e, d=app_dir, n=app_name: self.show_text_dialog(
-                    f'Remove {n}?\n\nThis will delete all app files.',
-                    action='Remove',
+                    f'確定要移除 {n} 嗎？\n\n此動作會刪除該應用程式的所有檔案。',
+                    action='移除',
                     action_color=lvr.COLOR_DANGER,
                     callback=lambda: self.remove_store_app(d)
                 ),
                 lv.EVENT_CODE.CLICKED, None
             )
         else:
-            self.screen_store_app.button_action.set_text('Install')
+            self.screen_store_app.button_action.set_text('安裝')
             self.screen_store_app.button_action.set_style_text_color(lvr.COLOR_TEXT, lv.STATE.DEFAULT)
             self.screen_store_app.button_action.add_event_cb(
                 lambda e, d=app_dir, n=app_name: self.install_store_app(d, n),
@@ -1462,10 +1462,10 @@ class RinkhalsUiApp(BaseApp):
 
     def install_store_app(self, app_dir, app_name):
         with lvr.lock():
-            self.modal_store_install.label_title.set_text(f'Installing {app_name}')
+            self.modal_store_install.label_title.set_text(f'正在安裝 {app_name}')
             self.modal_store_install.obj_progress_bar.set_width(lv.pct(0))
             self.modal_store_install.obj_progress_bar.set_style_bg_color(lvr.COLOR_PRIMARY, lv.STATE.DEFAULT)
-            self.modal_store_install.label_progress_text.set_text('Starting...')
+            self.modal_store_install.label_progress_text.set_text('正在啟動…')
             self.modal_store_install.button_cancel.remove_flag(lv.OBJ_FLAG.HIDDEN)
             self.modal_store_install.button_done.add_flag(lv.OBJ_FLAG.HIDDEN)
 
@@ -1486,7 +1486,7 @@ class RinkhalsUiApp(BaseApp):
             if not asset_group:
                 with lvr.lock():
                     self.modal_store_install.obj_progress_bar.set_style_bg_color(lvr.COLOR_DANGER, lv.STATE.DEFAULT)
-                    self.modal_store_install.label_progress_text.set_text(f'Unsupported model ({KOBRA_MODEL_CODE})')
+                    self.modal_store_install.label_progress_text.set_text(f'不支援此型號（{KOBRA_MODEL_CODE})')
                 return
 
             try:
@@ -1496,7 +1496,7 @@ class RinkhalsUiApp(BaseApp):
                 # so the TouchUI installs exactly the same build and version as rinkhals-web
                 # (avoiding the version skew of copying raw branch files).
                 with lvr.lock():
-                    self.modal_store_install.label_progress_text.set_text('Finding release...')
+                    self.modal_store_install.label_progress_text.set_text('正在尋找發行版本…')
 
                 release_url = f'https://api.github.com/repos/{self.APP_STORE_REPO}/releases/latest'
                 r = requests.get(release_url, headers=api_headers, timeout=10)
@@ -1511,13 +1511,13 @@ class RinkhalsUiApp(BaseApp):
                 if not download_url:
                     with lvr.lock():
                         self.modal_store_install.obj_progress_bar.set_style_bg_color(lvr.COLOR_DANGER, lv.STATE.DEFAULT)
-                        self.modal_store_install.label_progress_text.set_text(f'No build for {KOBRA_MODEL_CODE}')
+                        self.modal_store_install.label_progress_text.set_text(f'沒有適用於此型號的版本：{KOBRA_MODEL_CODE}')
                     return
 
                 # Download the SWU
                 os.makedirs(os.path.dirname(swu_path), exist_ok=True)
                 with lvr.lock():
-                    self.modal_store_install.label_progress_text.set_text('Downloading...')
+                    self.modal_store_install.label_progress_text.set_text('正在下載…')
 
                 with requests.get(download_url, headers=api_headers, timeout=120, stream=True) as swu_response:
                     swu_response.raise_for_status()
@@ -1541,7 +1541,7 @@ class RinkhalsUiApp(BaseApp):
                 # returns stdout, so append a sentinel to recover the exit code.
                 with lvr.lock():
                     self.modal_store_install.obj_progress_bar.set_width(lv.pct(95))
-                    self.modal_store_install.label_progress_text.set_text('Installing...')
+                    self.modal_store_install.label_progress_text.set_text('正在安裝…')
                     self.modal_store_install.button_cancel.add_flag(lv.OBJ_FLAG.HIDDEN)
 
                 output = shell(f'. /useremain/rinkhals/.current/tools.sh && install_swu "{swu_path}"; echo "RINKHALS_RC=$?"')
@@ -1554,22 +1554,22 @@ class RinkhalsUiApp(BaseApp):
                     logging.error(f'App store install_swu failed: {output}')
                     with lvr.lock():
                         self.modal_store_install.obj_progress_bar.set_style_bg_color(lvr.COLOR_DANGER, lv.STATE.DEFAULT)
-                        self.modal_store_install.label_progress_text.set_text('Install failed')
+                        self.modal_store_install.label_progress_text.set_text('安裝失敗')
                     return
 
                 with lvr.lock():
                     self.modal_store_install.obj_progress_bar.set_width(lv.pct(100))
-                    self.modal_store_install.label_progress_text.set_text('Installed successfully')
+                    self.modal_store_install.label_progress_text.set_text('安裝成功')
                     self.modal_store_install.button_cancel.add_flag(lv.OBJ_FLAG.HIDDEN)
                     self.modal_store_install.button_done.remove_flag(lv.OBJ_FLAG.HIDDEN)
                     # Refresh detail screen so button shows Remove immediately
                     self.screen_store_app.button_action.clear_event_cb()
-                    self.screen_store_app.button_action.set_text('Remove')
+                    self.screen_store_app.button_action.set_text('移除')
                     self.screen_store_app.button_action.set_style_text_color(lvr.COLOR_DANGER, lv.STATE.DEFAULT)
                     self.screen_store_app.button_action.add_event_cb(
                         lambda e, d=app_dir, n=app_name: self.show_text_dialog(
-                            f'Remove {n}?\n\nThis will delete all app files.',
-                            action='Remove',
+                            f'確定要移除 {n} 嗎？\n\n此動作會刪除該應用程式的所有檔案。',
+                            action='移除',
                             action_color=lvr.COLOR_DANGER,
                             callback=lambda: self.remove_store_app(d)
                         ),
@@ -1582,7 +1582,7 @@ class RinkhalsUiApp(BaseApp):
                 logging.error(f'App store install failed: {ex}')
                 with lvr.lock():
                     self.modal_store_install.obj_progress_bar.set_style_bg_color(lvr.COLOR_DANGER, lv.STATE.DEFAULT)
-                    self.modal_store_install.label_progress_text.set_text(f'Failed')
+                    self.modal_store_install.label_progress_text.set_text(f'失敗')
 
         run_async(do_install)
 
@@ -1601,7 +1601,7 @@ class RinkhalsUiApp(BaseApp):
             self.show_screen(self.screen_store)
         except Exception as ex:
             logging.error(f'App store remove failed: {ex}')
-            self.show_text_dialog(f'Failed to remove app:\n{ex}')
+            self.show_text_dialog(f'無法移除應用程式：\n{ex}')
 
 
 if __name__ == '__main__':
