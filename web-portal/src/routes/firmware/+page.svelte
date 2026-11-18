@@ -87,7 +87,7 @@
 			source: "rinkhals",
 			version: r.tag,
 			assetUrl: r.asset_url,
-			title: r.current ? `Reinstall Rinkhals ${r.tag}` : `Install Rinkhals ${r.tag}`,
+			title: r.current ? `重新安裝 Rinkhals ${r.tag}` : `安裝 Rinkhals ${r.tag}`,
 			subtitle: r.name || r.tag
 		};
 	}
@@ -98,8 +98,8 @@
 			source: "anycubic",
 			version: v.version,
 			assetUrl: v.url,
-			title: v.current ? `Reinstall Anycubic ${v.version}` : `Install Anycubic ${v.version}`,
-			subtitle: `Stock firmware ${v.version}`
+			title: v.current ? `重新安裝 Anycubic ${v.version}` : `安裝 Anycubic ${v.version}`,
+			subtitle: `原廠韌體 ${v.version}`
 		};
 	}
 
@@ -111,7 +111,7 @@
 			if (!res.ok) throw new Error(`HTTP ${res.status}`);
 			anycubic = await res.json();
 		} catch (e: any) {
-			errAnycubic = e.message || "Failed to load Anycubic catalog";
+			errAnycubic = e.message || "無法載入 Anycubic 韌體目錄";
 		} finally {
 			loadingAnycubic = false;
 		}
@@ -126,7 +126,7 @@
 			if (!res.ok) throw new Error(`HTTP ${res.status}`);
 			rinkhals = await res.json();
 		} catch (e: any) {
-			errRinkhals = e.message || "Failed to load Rinkhals releases";
+			errRinkhals = e.message || "無法載入 Rinkhals 發行版本";
 		} finally {
 			loadingRinkhals = false;
 		}
@@ -154,7 +154,7 @@
 	function formatUnix(ts?: number): string {
 		if (!ts) return "";
 		try {
-			return new Date(ts * 1000).toLocaleDateString(undefined, {
+			return new Date(ts * 1000).toLocaleDateString("zh-TW", {
 				year: "numeric",
 				month: "short",
 				day: "numeric"
@@ -167,7 +167,7 @@
 	function formatISO(iso?: string): string {
 		if (!iso) return "";
 		try {
-			return new Date(iso).toLocaleDateString(undefined, {
+			return new Date(iso).toLocaleDateString("zh-TW", {
 				year: "numeric",
 				month: "short",
 				day: "numeric"
@@ -186,7 +186,7 @@
 
 	function openAnycubicNotes(v: AnycubicVersion) {
 		modalRelease = {
-			title: `Anycubic firmware ${v.version}`,
+			title: `Anycubic 韌體 ${v.version}`,
 			subtitle: formatUnix(v.date),
 			body: v.changes ?? "",
 			url: ""
@@ -215,16 +215,20 @@
 	});
 </script>
 
+<svelte:head>
+	<title>韌體 - Rinkhals</title>
+</svelte:head>
+
 <header class="mb-6 flex items-start justify-between gap-4 flex-wrap">
 	<div>
-		<div class="text-xs uppercase tracking-wider text-ink-faint mb-1">Firmware</div>
+		<div class="text-xs uppercase tracking-wider text-ink-faint mb-1">韌體</div>
 		<h1 class="text-3xl font-semibold tracking-tight text-ink flex items-center gap-3">
-			<Cpu size={28} class="text-brand" /> Firmware
+			<Cpu size={28} class="text-brand" /> 韌體
 		</h1>
 		<p class="text-sm text-ink-muted mt-1">
-			Browse available Anycubic stock firmware and Rinkhals releases for this printer.
+			瀏覽適用於這台印表機的 Anycubic 原廠韌體與 Rinkhals 發行版本。
 			{#if $firmwareStatus.model_name}
-				Current device: <span class="text-ink">{$firmwareStatus.model_name}</span>.
+				目前裝置：<span class="text-ink">{$firmwareStatus.model_name}</span>。
 			{/if}
 		</p>
 	</div>
@@ -233,10 +237,10 @@
 		onclick={refreshAll}
 		disabled={refreshing}
 		class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg border border-line-soft text-ink-muted hover:bg-surface-warm hover:text-ink disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-		title="Re-fetch the upstream catalogs"
+		title="重新擷取來源的版本目錄"
 	>
 		<RefreshCw size={14} class={refreshing ? "animate-spin" : ""} />
-		{refreshing ? "Refreshing..." : "Refresh catalogs"}
+		{refreshing ? "正在重新整理…" : "重新整理版本目錄"}
 	</button>
 </header>
 
@@ -244,40 +248,40 @@
 <section class="bg-surface border border-line-soft rounded-xl p-5 mb-5">
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 		<div>
-			<div class="text-xs uppercase tracking-wider text-ink-faint mb-1">Anycubic firmware (installed)</div>
+			<div class="text-xs uppercase tracking-wider text-ink-faint mb-1">Anycubic 韌體（已安裝）</div>
 			<div class="text-xl font-semibold text-ink">
-				{$firmwareStatus.current_firmware || "Unknown"}
+				{$firmwareStatus.current_firmware || "未知"}
 			</div>
 			{#if $firmwareStatus.latest_firmware}
 				<div class="mt-1 text-xs text-ink-muted">
-					Latest available: <span class="text-ink">{$firmwareStatus.latest_firmware}</span>
+					最新版： <span class="text-ink">{$firmwareStatus.latest_firmware}</span>
 					{#if $firmwareStatus.firmware_update_available}
 						<span class="ml-2 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-brand/10 text-brand text-[10px] font-semibold uppercase tracking-wider">
-							Update available
+							有可用的更新
 						</span>
 					{:else}
 						<span class="ml-2 inline-flex items-center gap-1 text-emerald text-xs">
-							<CheckCircle2 size={12} /> Up to date
+							<CheckCircle2 size={12} /> 已是最新版
 						</span>
 					{/if}
 				</div>
 			{/if}
 		</div>
 		<div>
-			<div class="text-xs uppercase tracking-wider text-ink-faint mb-1">Rinkhals (installed)</div>
+			<div class="text-xs uppercase tracking-wider text-ink-faint mb-1">Rinkhals（已安裝）</div>
 			<div class="text-xl font-semibold text-ink">
-				{$firmwareStatus.current_rinkhals || "Unknown"}
+				{$firmwareStatus.current_rinkhals || "未知"}
 			</div>
 			{#if $firmwareStatus.latest_rinkhals}
 				<div class="mt-1 text-xs text-ink-muted">
-					Latest release: <span class="text-ink">{$firmwareStatus.latest_rinkhals}</span>
+					最新發行版本： <span class="text-ink">{$firmwareStatus.latest_rinkhals}</span>
 					{#if $firmwareStatus.rinkhals_update_available}
 						<span class="ml-2 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-brand/10 text-brand text-[10px] font-semibold uppercase tracking-wider">
-							Update available
+							有可用的更新
 						</span>
 					{:else}
 						<span class="ml-2 inline-flex items-center gap-1 text-emerald text-xs">
-							<CheckCircle2 size={12} /> Up to date
+							<CheckCircle2 size={12} /> 已是最新版
 						</span>
 					{/if}
 				</div>
@@ -297,9 +301,9 @@
 	<div class="bg-surface-warm border border-accent/40 rounded-xl px-4 py-3 mb-5 flex items-start gap-3">
 		<AlertCircle size={18} class="text-accent shrink-0 mt-0.5" />
 		<div class="flex-1 text-sm">
-			<p class="font-medium text-ink">Printer is busy</p>
+			<p class="font-medium text-ink">印表機忙碌中</p>
 			<p class="text-ink-muted mt-0.5">
-				{$printerState.reason ?? "A print is in progress"}. Firmware installs are disabled until the print completes. You can still browse versions and read release notes.
+				{$printerState.reason ?? "列印進行中"}。列印完成前無法安裝韌體，仍可瀏覽版本與閱讀版本說明。
 			</p>
 		</div>
 	</div>
@@ -312,14 +316,14 @@
 		onclick={() => (tab = "rinkhals")}
 		class="px-4 py-2 text-sm font-medium transition-colors {tab === 'rinkhals' ? 'bg-brand text-white' : 'text-ink-muted hover:bg-surface-warm'}"
 	>
-		Rinkhals releases
+		Rinkhals 發行版本
 	</button>
 	<button
 		type="button"
 		onclick={() => (tab = "anycubic")}
 		class="px-4 py-2 text-sm font-medium transition-colors border-l border-line-soft {tab === 'anycubic' ? 'bg-brand text-white' : 'text-ink-muted hover:bg-surface-warm'}"
 	>
-		Anycubic stock firmware
+		Anycubic 原廠韌體
 	</button>
 </div>
 
@@ -327,7 +331,7 @@
 	<section>
 		<div class="flex items-center justify-between mb-3">
 			<p class="text-xs text-ink-muted">
-				Source: <code class="text-[11px]">rinkhals-community/Rinkhals</code> releases
+				來源：<code class="text-[11px]">rinkhals-community/Rinkhals</code> 發行版本
 			</p>
 			<label class="inline-flex items-center gap-2 text-xs text-ink-muted cursor-pointer">
 				<input
@@ -337,18 +341,18 @@
 					class="accent-brand"
 				/>
 				<Beaker size={12} class="text-ink-faint" />
-				Show developer / test releases
+				顯示開發／測試版本
 			</label>
 		</div>
 
 		{#if loadingRinkhals && !rinkhals}
-			<p class="text-sm text-ink-muted">Loading Rinkhals releases...</p>
+			<p class="text-sm text-ink-muted">正在載入 Rinkhals 發行版本…</p>
 		{:else if errRinkhals}
 			<div class="bg-coral/10 border border-coral/40 rounded-lg p-4 text-sm text-ink">
-				Could not load Rinkhals releases: {errRinkhals}
+				無法載入 Rinkhals 發行版本： {errRinkhals}
 			</div>
 		{:else if rinkhals && rinkhals.releases.length === 0}
-			<p class="text-sm text-ink-muted italic">No releases match the current filter.</p>
+			<p class="text-sm text-ink-muted italic">沒有符合目前篩選條件的版本。</p>
 		{:else if rinkhals}
 			<div class="space-y-3">
 				{#each rinkhals.releases as r}
@@ -359,20 +363,20 @@
 								<code class="text-[11px] text-ink-muted">{r.tag}</code>
 								{#if r.current}
 									<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-emerald/15 text-emerald text-[10px] font-semibold uppercase tracking-wider">
-										<CheckCircle2 size={10} /> Installed
+										<CheckCircle2 size={10} /> 已安裝
 									</span>
 								{/if}
 								{#if r.is_prerelease}
 									<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-accent/15 text-accent text-[10px] font-semibold uppercase tracking-wider">
-										<Beaker size={10} /> Test build
+										<Beaker size={10} /> 測試版
 									</span>
 								{/if}
 							</div>
 							<div class="mt-1 text-xs text-ink-muted">
-								Published {formatISO(r.published_at)}
+								發布日期：{formatISO(r.published_at)}
 								{#if r.asset_size}
 									<span class="mx-1.5 text-ink-faint">|</span>
-									Update bundle: {formatSize(r.asset_size)}
+									更新套件： {formatSize(r.asset_size)}
 								{/if}
 							</div>
 						</div>
@@ -382,16 +386,16 @@
 								onclick={() => openRinkhalsNotes(r)}
 								class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-line-soft text-ink-muted hover:bg-surface-warm hover:text-ink transition-colors"
 							>
-								<FileText size={12} /> Release notes
+								<FileText size={12} /> 版本說明
 							</button>
 							<button
 								type="button"
 								onclick={() => openRinkhalsInstall(r)}
 								disabled={!canInstall || !r.asset_url}
-								title={!canInstall ? ($printerState.reason || "Disabled while printer is busy") : (!r.asset_url ? "No update bundle available for this printer model" : (r.current ? "Reinstall this Rinkhals release" : "Install this Rinkhals release"))}
+								title={!canInstall ? ($printerState.reason || "印表機忙碌時無法安裝") : (!r.asset_url ? "此印表機型號沒有可用的更新套件" : (r.current ? "重新安裝此 Rinkhals 版本" : "安裝此 Rinkhals 版本"))}
 								class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-brand text-white hover:bg-brand-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 							>
-								<Download size={12} /> {r.current ? "Reinstall" : "Install"}
+								<Download size={12} /> {r.current ? "重新安裝" : "安裝"}
 							</button>
 						</div>
 					</article>
@@ -402,17 +406,17 @@
 {:else if tab === "anycubic"}
 	<section>
 		<p class="text-xs text-ink-muted mb-3">
-			Source: community-curated <code class="text-[11px]">Rinkhals.Firmwares</code> manifest. Anycubic does not publish a release feed directly.
+			來源：社群維護的 <code class="text-[11px]">Rinkhals.Firmwares</code> 清單。Anycubic 並未直接提供版本資訊來源。
 		</p>
 
 		{#if loadingAnycubic && !anycubic}
-			<p class="text-sm text-ink-muted">Loading Anycubic firmware catalog...</p>
+			<p class="text-sm text-ink-muted">正在載入 Anycubic 韌體目錄…</p>
 		{:else if errAnycubic}
 			<div class="bg-coral/10 border border-coral/40 rounded-lg p-4 text-sm text-ink">
-				Could not load Anycubic firmware catalog: {errAnycubic}
+				無法載入 Anycubic 韌體目錄： {errAnycubic}
 			</div>
 		{:else if anycubic && anycubic.versions.length === 0}
-			<p class="text-sm text-ink-muted italic">No Anycubic firmware versions found in the manifest.</p>
+			<p class="text-sm text-ink-muted italic">清單中找不到 Anycubic 韌體版本。</p>
 		{:else if anycubic}
 			<div class="space-y-3">
 				{#each anycubic.versions as v}
@@ -422,12 +426,12 @@
 								<h3 class="text-base font-semibold text-ink">{v.version}</h3>
 								{#if v.current}
 									<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-emerald/15 text-emerald text-[10px] font-semibold uppercase tracking-wider">
-										<CheckCircle2 size={10} /> Installed
+										<CheckCircle2 size={10} /> 已安裝
 									</span>
 								{/if}
 							</div>
 							<div class="mt-1 text-xs text-ink-muted">
-								Released {formatUnix(v.date)}
+								發布日期：{formatUnix(v.date)}
 								{#if v.md5}
 									<span class="mx-1.5 text-ink-faint">|</span>
 									<code class="text-[11px]">md5 {v.md5.slice(0, 8)}</code>
@@ -439,19 +443,19 @@
 								type="button"
 								onclick={() => openAnycubicNotes(v)}
 								disabled={!v.changes}
-								title={v.changes ? "" : "No changelog provided in manifest"}
+								title={v.changes ? "" : "清單未提供變更記錄"}
 								class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-line-soft text-ink-muted hover:bg-surface-warm hover:text-ink disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 							>
-								<FileText size={12} /> Changelog
+								<FileText size={12} /> 變更記錄
 							</button>
 							<button
 								type="button"
 								onclick={() => openAnycubicInstall(v)}
 								disabled={!canInstall || !v.url}
-								title={!canInstall ? ($printerState.reason || "Disabled while printer is busy") : (v.current ? "Reinstall this stock firmware version" : "Install this stock firmware version")}
+								title={!canInstall ? ($printerState.reason || "印表機忙碌時無法安裝") : (v.current ? "重新安裝此原廠韌體版本" : "安裝此原廠韌體版本")}
 								class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-brand text-white hover:bg-brand-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 							>
-								<Download size={12} /> {v.current ? "Reinstall" : "Install"}
+								<Download size={12} /> {v.current ? "重新安裝" : "安裝"}
 							</button>
 						</div>
 					</article>

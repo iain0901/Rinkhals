@@ -32,7 +32,7 @@
 
 	function newSession() {
 		seq += 1;
-		const s: Session = { id: `shell-${seq}`, title: `Shell ${seq}`, connected: false };
+		const s: Session = { id: `shell-${seq}`, title: `命令列 ${seq}`, connected: false };
 		sessions = [...sessions, s];
 		activeId = s.id;
 	}
@@ -166,13 +166,13 @@
 <div class="h-full flex flex-col space-y-4 max-w-7xl mx-auto w-full">
 	<header class="flex items-end justify-between pb-4 border-b border-line-soft">
 		<div>
-			<p class="text-xs uppercase tracking-wider text-ink-faint font-medium">Shell</p>
+			<p class="text-xs uppercase tracking-wider text-ink-faint font-medium">命令列</p>
 			<h2 class="text-3xl font-semibold text-ink mt-1 tracking-tight flex items-center gap-2">
 				<TerminalIcon size={26} class="text-brand" />
-				Console
+				終端機
 			</h2>
 		</div>
-		<span class="text-xs text-ink-faint">{sessions.length} open</span>
+		<span class="text-xs text-ink-faint">已開啟 {sessions.length} 個工作階段</span>
 	</header>
 
 	<div class="bg-canvas rounded-xl border border-line-soft flex-1 flex flex-col overflow-hidden">
@@ -191,14 +191,14 @@
 					aria-selected={s.id === activeId}
 				>
 					{#if !s.connected}
-						<span class="w-1.5 h-1.5 rounded-full bg-accent shrink-0" title="Disconnected"></span>
+						<span class="w-1.5 h-1.5 rounded-full bg-accent shrink-0" title="已中斷連線"></span>
 					{/if}
 					<span class="font-medium whitespace-nowrap">{s.title}</span>
 					<button
 						type="button"
 						class="p-0.5 rounded hover:bg-surface-accent hover:text-coral text-ink-faint transition-colors"
-						title="Close shell"
-						aria-label="Close {s.title}"
+						title="關閉命令列"
+						aria-label="關閉 {s.title}"
 						onclick={(e) => {
 							e.stopPropagation();
 							closeSession(s.id);
@@ -212,8 +212,8 @@
 			<button
 				type="button"
 				class="ml-1 p-1.5 rounded-lg text-ink-muted hover:bg-canvas hover:text-brand transition-colors shrink-0"
-				title="New shell"
-				aria-label="New shell"
+				title="新增命令列"
+				aria-label="新增命令列"
 				onclick={newSession}
 			>
 				<Plus size={16} />
@@ -225,13 +225,13 @@
 			{#if sessions.length === 0}
 				<div class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-ink-faint">
 					<TerminalIcon size={32} class="opacity-60" />
-					<p class="text-sm">No shell open</p>
+					<p class="text-sm">尚未開啟命令列</p>
 					<button
 						type="button"
 						onclick={newSession}
 						class="flex items-center gap-1.5 px-3 py-1.5 bg-brand hover:bg-brand-hover text-white rounded-lg text-sm font-medium transition-colors"
 					>
-						<Plus size={14} /> Open a shell
+						<Plus size={14} /> 開啟命令列
 					</button>
 				</div>
 			{:else}

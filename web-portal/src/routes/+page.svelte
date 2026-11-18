@@ -3,6 +3,23 @@
 	import { Box, Video, MonitorPlay, Activity, HardDrive, Printer, Thermometer, ExternalLink, ArrowUpCircle } from "lucide-svelte";
 	import { firmwareStatus } from "$lib/firmwareStatus";
 
+	const printerStateLabels: Readonly<Record<string, string>> = {
+		standby: "待命",
+		printing: "列印中",
+		paused: "已暫停",
+		pausing: "正在暫停",
+		cancelling: "正在取消",
+		cancelled: "已取消",
+		complete: "列印完成",
+		error: "錯誤",
+		offline: "離線",
+		unknown: "未知"
+	};
+
+	function printerStateLabel(state: string): string {
+		return Object.hasOwn(printerStateLabels, state) ? printerStateLabels[state] : state.toUpperCase();
+	}
+
 	type AppInfo = { id: string; name: string; url?: string; port: string; icon: any; status: string; accent: string; };
 
 	let apps = $state<AppInfo[]>([]);
@@ -94,15 +111,15 @@
 </script>
 
 <svelte:head>
-	<title>Dashboard - Rinkhals</title>
+	<title>總覽 - Rinkhals</title>
 </svelte:head>
 
 <div class="space-y-8 max-w-7xl mx-auto">
 	<header class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-4 pb-4 border-b border-line-soft">
 		<div>
-			<p class="text-xs uppercase tracking-wider text-ink-faint font-medium">Overview</p>
+			<p class="text-xs uppercase tracking-wider text-ink-faint font-medium">總覽</p>
 			<h2 class="text-3xl font-semibold text-ink mt-1 tracking-tight">
-				System status
+				系統狀態
 			</h2>
 		</div>
 
@@ -110,7 +127,7 @@
 			<div class="flex items-center gap-2 text-sm flex-wrap">
 				<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-warm border border-accent/30 text-ink">
 					<Printer size={15} class={printer.state === 'printing' ? 'text-accent animate-pulse' : 'text-ink-muted'} />
-					<span class="font-medium">{printer.state.toUpperCase()}</span>
+					<span class="font-medium">{printerStateLabel(printer.state)}</span>
 				</span>
 				<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-canvas border border-line-soft text-ink-2">
 					<Thermometer size={15} class="text-coral" />
@@ -120,26 +137,26 @@
 					<a
 						href="/firmware"
 						class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-soft border border-brand/30 text-brand text-sm hover:bg-brand hover:text-white transition-colors"
-						title="Open the Firmware page"
+						title="開啟韌體頁面"
 					>
 						<ArrowUpCircle size={14} />
-						<span class="font-medium">Firmware update available</span>
+						<span class="font-medium">有可用的韌體更新</span>
 					</a>
 				{/if}
 			</div>
 		{:else}
 			<div class="flex items-center gap-2 text-sm flex-wrap">
 				<div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-canvas border border-line-soft text-ink-muted">
-					<Printer size={15} /> Moonraker offline
+					<Printer size={15} /> Moonraker 離線
 				</div>
 				{#if $firmwareStatus.firmware_update_available || $firmwareStatus.rinkhals_update_available}
 					<a
 						href="/firmware"
 						class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-soft border border-brand/30 text-brand hover:bg-brand hover:text-white transition-colors"
-						title="Open the Firmware page"
+						title="開啟韌體頁面"
 					>
 						<ArrowUpCircle size={14} />
-						<span class="font-medium">Firmware update available</span>
+						<span class="font-medium">有可用的韌體更新</span>
 					</a>
 				{/if}
 			</div>
@@ -162,7 +179,7 @@
 				<HardDrive size={20} class="text-coral" />
 			</div>
 			<div>
-				<p class="text-xs uppercase tracking-wider text-ink-faint">Storage</p>
+				<p class="text-xs uppercase tracking-wider text-ink-faint">儲存空間</p>
 				<p class="text-lg font-semibold text-ink">{metrics ? `${metrics.diskUsage}%` : "—"}</p>
 			</div>
 		</div>
@@ -172,8 +189,8 @@
 	     part so it's obvious that "available" (not "free") is the usable figure. -->
 	<div class="bg-canvas border border-line-soft rounded-xl p-4">
 		<div class="flex items-baseline justify-between">
-			<p class="text-xs uppercase tracking-wider text-ink-faint">Memory</p>
-			<p class="text-xs text-ink-faint">{metrics ? `${metrics.memTotalMB} MB total` : ""}</p>
+			<p class="text-xs uppercase tracking-wider text-ink-faint">記憶體</p>
+			<p class="text-xs text-ink-faint">{metrics ? `共 ${metrics.memTotalMB} MB` : ""}</p>
 		</div>
 
 		{#if metrics}
@@ -190,21 +207,21 @@
 
 			<div class="mt-1.5" style="margin-left: {inUsePct}%; width: {cachedPct + freePct}%;">
 				<div class="h-2 border-l border-r border-b border-line"></div>
-				<p class="text-center text-sm font-semibold text-ink mt-1">{metrics.memAvailableMB} MB available</p>
+				<p class="text-center text-sm font-semibold text-ink mt-1">可用 {metrics.memAvailableMB} MB</p>
 			</div>
 
 			<div class="flex flex-wrap gap-x-5 gap-y-1 mt-3 text-xs text-ink-muted">
 				<span class="inline-flex items-center gap-1.5">
 					<span class="w-3 h-3 rounded-sm" style="background: var(--color-coral);"></span>
-					In use {metrics.memInUseMB} MB
+					使用中 {metrics.memInUseMB} MB
 				</span>
 				<span class="inline-flex items-center gap-1.5">
 					<span class="w-3 h-3 rounded-sm" style="background: var(--color-accent);"></span>
-					Cached {metrics.memCachedMB} MB
+					快取 {metrics.memCachedMB} MB
 				</span>
 				<span class="inline-flex items-center gap-1.5">
 					<span class="w-3 h-3 rounded-sm bg-surface border border-line-soft"></span>
-					Free {metrics.memFreeMB} MB
+					閒置 {metrics.memFreeMB} MB
 				</span>
 			</div>
 		{:else}
@@ -215,14 +232,14 @@
 	<!-- Services -->
 	<section>
 		<div class="flex items-baseline justify-between mb-4">
-			<h3 class="text-lg font-semibold text-ink">Web interfaces</h3>
-			<p class="text-xs text-ink-faint">Updated every 5s</p>
+			<h3 class="text-lg font-semibold text-ink">網頁介面</h3>
+			<p class="text-xs text-ink-faint">每 5 秒更新一次</p>
 		</div>
 
 		{#if loading}
-			<div class="text-ink-faint animate-pulse">Scanning for running services...</div>
+			<div class="text-ink-faint animate-pulse">正在搜尋執行中的服務…</div>
 		{:else if apps.length === 0}
-			<div class="text-ink-faint italic">No web interfaces are currently active or installed.</div>
+			<div class="text-ink-faint italic">目前沒有已安裝或執行中的網頁介面。</div>
 		{:else}
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 				{#each apps as app}
@@ -242,7 +259,7 @@
 								<Icon size={22} class={isRunning ? app.accent : 'text-ink-faint'} />
 							</div>
 							<span class="px-2.5 py-1 text-[11px] font-semibold rounded-full uppercase tracking-wider {isRunning ? 'bg-brand-soft text-brand' : 'bg-surface-accent text-coral'}">
-								{app.status}
+								{isRunning ? '執行中' : app.status === 'Stopped' ? '已停止' : app.status}
 							</span>
 						</div>
 						<h4 class="text-base font-semibold {isRunning ? 'text-ink' : 'text-ink-faint'} mb-1 flex items-center gap-1.5">
@@ -252,7 +269,7 @@
 							{/if}
 						</h4>
 						<p class="text-sm {isRunning ? 'text-ink-muted' : 'text-ink-faint'}">
-							{isRunning ? `Port ${app.port}` : 'Service is currently stopped'}
+							{isRunning ? `連接埠 ${app.port}` : '服務目前已停止'}
 						</p>
 					</a>
 				{/each}

@@ -158,7 +158,7 @@
 				if (copiedKey === key) copiedKey = null;
 			}, 1500);
 		} catch (e) {
-			showToast("Copy failed", "err");
+			showToast("複製失敗", "err");
 		}
 	}
 
@@ -252,17 +252,17 @@
 			if (data.needs_config) {
 				// Left disabled on purpose: open the configure drawer so the user
 				// can set required values, then enable from there.
-				showToast(`${entry.name} installed — configure it, then enable`);
+				showToast(`已安裝 ${entry.name}，請先設定再啟用`);
 				tab = "installed";
 				const installed = apps.find((a) => a.id === entry.id);
 				if (installed) openConfigure(installed);
 			} else if (data.auto_enabled) {
-				showToast(`${entry.name} installed and started`);
+				showToast(`已安裝並啟動 ${entry.name}`);
 			} else {
-				showToast(`${entry.name} installed`);
+				showToast(`已安裝 ${entry.name}`);
 			}
 		} catch (e: any) {
-			showToast(e.message || "Install failed", "err");
+			showToast(e.message ? `安裝失敗：${e.message}` : "安裝失敗", "err");
 		} finally {
 			installingId = null;
 		}
@@ -281,7 +281,7 @@
 				method: "POST",
 				body: JSON.stringify({ action: "start" })
 			});
-			showToast(`${app.name} enabled and started`);
+			showToast(`已啟用並啟動 ${app.name}`);
 			const refreshed = apps.find((a) => a.id === app.id);
 			if (refreshed) configureApp = refreshed;
 		} catch {
@@ -323,12 +323,12 @@
 			if (!res.ok) throw new Error(`HTTP ${res.status}`);
 			const data = await res.json().catch(() => ({}));
 			if (data && data.success === false) {
-				throw new Error(data.output || "Operation failed");
+				throw new Error(data.output || "操作失敗");
 			}
 			await fetchApps();
 			return data;
 		} catch (e: any) {
-			showToast(e.message || "Operation failed", "err");
+			showToast(e.message && e.message !== "操作失敗" ? `操作失敗：${e.message}` : "操作失敗", "err");
 			throw e;
 		} finally {
 			markBusy(id, false);
@@ -338,7 +338,7 @@
 	async function toggleEnabled(app: App) {
 		try {
 			await callApp(app.id, app.enabled ? "/disable" : "/enable", { method: "POST" });
-			showToast(`${app.name} ${app.enabled ? "disabled" : "enabled"}`);
+			showToast(`已${app.enabled ? "停用" : "啟用"} ${app.name}`);
 		} catch {
 			// toast already shown
 		}
@@ -359,13 +359,13 @@
 			if (!res.ok || data.success === false) {
 				throw new Error(data.output || `HTTP ${res.status}`);
 			}
-			showToast(`${app.name} uninstalled`);
+			showToast(`已解除安裝 ${app.name}`);
 			// If the drawer is open on this app, close it: the app is gone.
 			if (configureApp?.id === app.id) configureApp = null;
 			// Refresh both lists. The catalog's "Installed" pill should flip back to "Install".
 			await Promise.all([fetchApps(), fetchCatalog(true)]);
 		} catch (e: any) {
-			showToast(e.message || "Uninstall failed", "err");
+			showToast(e.message ? `解除安裝失敗：${e.message}` : "解除安裝失敗", "err");
 		} finally {
 			uninstallRunning = false;
 			uninstallTarget = null;
@@ -378,7 +378,7 @@
 				method: "POST",
 				body: JSON.stringify({ action })
 			});
-			showToast(`${app.name}: ${action} sent`);
+			showToast(`已對 ${app.name} 送出${{ start: "啟動", stop: "停止", restart: "重新啟動" }[action]}指令`);
 		} catch {}
 	}
 
@@ -413,13 +413,13 @@
 			if (!res.ok || data.success === false) {
 				throw new Error(data.output || `HTTP ${res.status}`);
 			}
-			showToast("Configuration saved");
+			showToast("設定已儲存");
 			await fetchApps();
 			const refreshed = apps.find((a) => a.id === configureApp!.id);
 			if (refreshed) configureApp = refreshed;
 			pendingConfig = {};
 		} catch (e: any) {
-			showToast(e.message || "Save failed", "err");
+			showToast(e.message ? `儲存失敗：${e.message}` : "儲存失敗", "err");
 		} finally {
 			configSaving = false;
 		}
@@ -432,7 +432,7 @@
 				method: "DELETE"
 			});
 			if (!res.ok) throw new Error(`HTTP ${res.status}`);
-			showToast(`${prop.display || prop.key} reset to default`);
+			showToast(`${prop.display || prop.key} 已還原為預設值`);
 			const fresh = { ...pendingConfig };
 			delete fresh[prop.key];
 			pendingConfig = fresh;
@@ -440,7 +440,7 @@
 			const refreshed = apps.find((a) => a.id === configureApp!.id);
 			if (refreshed) configureApp = refreshed;
 		} catch (e: any) {
-			showToast(e.message || "Reset failed", "err");
+			showToast(e.message ? `重設失敗：${e.message}` : "重設失敗", "err");
 		}
 	}
 
@@ -451,13 +451,13 @@
 				method: "DELETE"
 			});
 			if (!res.ok) throw new Error(`HTTP ${res.status}`);
-			showToast("All overrides cleared");
+			showToast("已清除所有自訂設定");
 			pendingConfig = {};
 			await fetchApps();
 			const refreshed = apps.find((a) => a.id === configureApp!.id);
 			if (refreshed) configureApp = refreshed;
 		} catch (e: any) {
-			showToast(e.message || "Clear failed", "err");
+			showToast(e.message ? `清除失敗：${e.message}` : "清除失敗", "err");
 		}
 	}
 
@@ -486,11 +486,11 @@
 			const then = new Date(iso).getTime();
 			const diffMs = Date.now() - then;
 			const m = Math.floor(diffMs / 60000);
-			if (m < 1) return "just now";
-			if (m < 60) return `${m}m ago`;
+			if (m < 1) return "剛剛";
+			if (m < 60) return `${m} 分鐘前`;
 			const h = Math.floor(m / 60);
-			if (h < 24) return `${h}h ago`;
-			return `${Math.floor(h / 24)}d ago`;
+			if (h < 24) return `${h} 小時前`;
+			return `${Math.floor(h / 24)} 天前`;
 		} catch {
 			return "";
 		}
@@ -519,25 +519,25 @@
 	function statusPill(app: App): { label: string; classes: string } {
 		if (!app.enabled) {
 			return {
-				label: "Disabled",
+				label: "已停用",
 				classes: "bg-surface-accent text-ink-faint border-line-soft"
 			};
 		}
 		if (app.running) {
 			return {
-				label: "Running",
+				label: "執行中",
 				classes: "bg-brand-soft text-brand border-brand/30"
 			};
 		}
 		return {
-			label: "Stopped",
+			label: "已停止",
 			classes: "bg-surface-warm text-accent-hover border-accent/30"
 		};
 	}
 </script>
 
 <svelte:head>
-	<title>Apps - Rinkhals</title>
+	<title>應用程式 - Rinkhals</title>
 </svelte:head>
 
 <div class="space-y-6 max-w-7xl mx-auto w-full">
@@ -545,16 +545,16 @@
 		<!-- Row 1: title + tab toggle (fixed positions) -->
 		<div class="flex items-start justify-between gap-4">
 			<div class="min-w-0">
-				<p class="text-xs uppercase tracking-wider text-ink-faint font-medium">Apps</p>
+				<p class="text-xs uppercase tracking-wider text-ink-faint font-medium">應用程式</p>
 				<h2 class="text-3xl font-semibold text-ink mt-1 tracking-tight flex items-center gap-2">
 					<Boxes size={26} class="text-brand" />
-					Apps
+					應用程式
 				</h2>
 				<!-- Reserved subtitle slot; height fixed so swapping text doesn't shift layout -->
 				<p class="text-ink-muted text-sm mt-2 h-5">
 					{tab === "installed"
-						? "Enable, start and configure the apps installed on this printer."
-						: "Discover and install community apps from Rinkhals.Apps."}
+						? "啟用、啟動及設定這台印表機上已安裝的應用程式。"
+						: "瀏覽並安裝 Rinkhals.Apps 提供的社群應用程式。"}
 				</p>
 			</div>
 
@@ -564,14 +564,14 @@
 					onclick={() => (tab = "installed")}
 					class="px-3 py-1.5 rounded-md text-sm font-medium transition-colors {tab === 'installed' ? 'bg-canvas text-brand shadow-sm' : 'text-ink-muted hover:text-ink'}"
 				>
-					Installed
+					已安裝
 				</button>
 				<button
 					type="button"
 					onclick={() => (tab = "catalog")}
 					class="px-3 py-1.5 rounded-md text-sm font-medium transition-colors {tab === 'catalog' ? 'bg-canvas text-brand shadow-sm' : 'text-ink-muted hover:text-ink'}"
 				>
-					Catalog
+					應用程式目錄
 				</button>
 			</div>
 		</div>
@@ -585,7 +585,7 @@
 					<input
 						bind:value={searchQuery}
 						type="text"
-						placeholder="Search..."
+						placeholder="搜尋…"
 						class="bg-canvas text-ink rounded-lg pl-9 pr-3 py-2 border border-line-soft focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 text-sm w-52"
 					/>
 				</div>
@@ -593,25 +593,25 @@
 					bind:value={stateFilter}
 					class="bg-canvas text-ink border border-line-soft rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
 				>
-					<option value="all">All states</option>
-					<option value="enabled">Enabled</option>
-					<option value="disabled">Disabled</option>
-					<option value="running">Running</option>
+					<option value="all">所有狀態</option>
+					<option value="enabled">已啟用</option>
+					<option value="disabled">已停用</option>
+					<option value="running">執行中</option>
 				</select>
 				<select
 					bind:value={sourceFilter}
 					class="bg-canvas text-ink border border-line-soft rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
 				>
-					<option value="all">All sources</option>
-					<option value="system">System</option>
-					<option value="user">User</option>
+					<option value="all">所有來源</option>
+					<option value="system">系統</option>
+					<option value="user">使用者</option>
 				</select>
 				<label
 					class="inline-flex items-center gap-2 px-3 py-2 bg-canvas border border-line-soft rounded-lg text-sm text-ink-2 cursor-pointer select-none"
-					title="Reveal advanced settings in the Configure drawer"
+					title="在設定面板中顯示進階設定"
 				>
 					<input type="checkbox" bind:checked={showAdvanced} class="rounded border-line text-brand focus:ring-brand/30" />
-					<span>Advanced</span>
+					<span>進階</span>
 				</label>
 			{:else}
 				<div class="relative">
@@ -619,7 +619,7 @@
 					<input
 						bind:value={catalogSearch}
 						type="text"
-						placeholder="Search catalog..."
+						placeholder="搜尋應用程式目錄…"
 						class="bg-canvas text-ink rounded-lg pl-9 pr-3 py-2 border border-line-soft focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 text-sm w-52"
 					/>
 				</div>
@@ -634,7 +634,7 @@
 					{:else}
 						<RefreshCw size={14} />
 					{/if}
-					Refresh
+					重新整理
 				</button>
 			{/if}
 		</div>
@@ -644,14 +644,14 @@
 		<div class="mt-3 h-5 text-[11px] text-ink-faint flex flex-wrap items-center gap-3">
 			{#if tab === "catalog" && catalog}
 				<span class="inline-flex items-center gap-1">
-					<Package size={12} /> Release <span class="font-mono text-ink-muted">{catalog.release || "(unknown)"}</span>
+					<Package size={12} /> 發行版本 <span class="font-mono text-ink-muted">{catalog.release || "（未知）"}</span>
 				</span>
-				<span>Printer: <span class="font-mono text-ink-muted">{catalog.model || "(unknown)"}</span></span>
+				<span>印表機： <span class="font-mono text-ink-muted">{catalog.model || "（未知）"}</span></span>
 				{#if catalog.asset_group}
-					<span>SWU group: <span class="font-mono text-ink-muted">{catalog.asset_group}</span></span>
+					<span>SWU 群組： <span class="font-mono text-ink-muted">{catalog.asset_group}</span></span>
 				{/if}
 				{#if catalog.fetched_at}
-					<span>Fetched {relativeTime(catalog.fetched_at)}</span>
+					<span>擷取時間：{relativeTime(catalog.fetched_at)}</span>
 				{/if}
 				<a
 					href="https://github.com/rinkhals-community/Rinkhals.Apps"
@@ -659,7 +659,7 @@
 					rel="noopener noreferrer"
 					class="inline-flex items-center gap-1 text-brand hover:underline ml-auto"
 				>
-					Source <ExternalLink size={11} />
+					來源 <ExternalLink size={11} />
 				</a>
 			{/if}
 		</div>
@@ -669,9 +669,9 @@
 		<div class="bg-surface-warm border border-accent/40 rounded-xl px-4 py-3 flex items-start gap-3">
 			<AlertCircle size={18} class="text-accent shrink-0 mt-0.5" />
 			<div class="flex-1 text-sm">
-				<p class="font-medium text-ink">Printer is busy</p>
+				<p class="font-medium text-ink">印表機忙碌中</p>
 				<p class="text-ink-muted mt-0.5">
-					{$printerState.reason ?? "A print is in progress"}. Installs and uninstalls are disabled until the print completes. App start, stop, restart, and Configure remain available.
+					{$printerState.reason ?? "列印進行中"}。列印完成前無法安裝或解除安裝，仍可啟動、停止、重新啟動或設定應用程式。
 				</p>
 			</div>
 		</div>
@@ -681,14 +681,14 @@
 	{#if error}
 		<div class="bg-surface-accent border border-coral/40 rounded-xl px-4 py-3 text-coral text-sm flex items-center gap-2">
 			<AlertCircle size={16} />
-			{error}
+			無法載入應用程式：{error}
 		</div>
 	{/if}
 
 	{#if loading && apps.length === 0}
-		<div class="text-ink-faint animate-pulse">Loading apps...</div>
+		<div class="text-ink-faint animate-pulse">正在載入應用程式…</div>
 	{:else if visibleApps.length === 0}
-		<div class="text-ink-faint italic">No apps match the current filters.</div>
+		<div class="text-ink-faint italic">沒有符合目前篩選條件的應用程式。</div>
 	{:else}
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 			{#each visibleApps as app (app.id)}
@@ -703,7 +703,7 @@
 									<span class="text-[11px] text-ink-faint font-mono">v{app.version}</span>
 								{/if}
 								<span class="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded {app.source === 'user' ? 'bg-surface-warm text-accent-hover border border-accent/30' : 'bg-surface text-ink-muted border border-line-soft'}">
-									{app.source}
+									{app.source === 'user' ? '使用者' : app.source === 'system' ? '系統' : app.source}
 								</span>
 							</div>
 							<p class="text-[11px] text-ink-faint font-mono mt-0.5">{app.id}</p>
@@ -714,8 +714,8 @@
 							type="button"
 							onclick={() => toggleEnabled(app)}
 							disabled={isBusy}
-							title={app.enabled ? "Disable" : "Enable"}
-							aria-label="Toggle enabled"
+							title={app.enabled ? "停用" : "啟用"}
+							aria-label="切換啟用狀態"
 							class="shrink-0 relative inline-flex h-6 w-11 items-center rounded-full transition-colors disabled:opacity-50 {app.enabled ? 'bg-brand' : 'bg-surface border border-line-soft'}"
 						>
 							<span class="inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform {app.enabled ? 'translate-x-6' : 'translate-x-1'}"></span>
@@ -734,7 +734,7 @@
 									onclick={() => toggleDesc(app.id)}
 									class="text-[11px] text-brand hover:underline mt-0.5"
 								>
-									{expandedDescs.has(app.id) ? 'Show less' : 'Show more'}
+									{expandedDescs.has(app.id) ? '顯示較少' : '顯示更多'}
 								</button>
 							{/if}
 						</div>
@@ -765,7 +765,7 @@
 									disabled={isBusy}
 									class="flex items-center gap-1.5 px-2.5 py-1.5 bg-surface hover:bg-surface-warm border border-line-soft rounded-lg text-xs font-medium text-ink-2 disabled:opacity-50 transition-colors"
 								>
-									<Square size={13} /> Stop
+									<Square size={13} /> 停止
 								</button>
 								<button
 									type="button"
@@ -773,7 +773,7 @@
 									disabled={isBusy}
 									class="flex items-center gap-1.5 px-2.5 py-1.5 bg-surface hover:bg-surface-warm border border-line-soft rounded-lg text-xs font-medium text-ink-2 disabled:opacity-50 transition-colors"
 								>
-									<RotateCw size={13} /> Restart
+									<RotateCw size={13} /> 重新啟動
 								</button>
 							{:else}
 								<button
@@ -782,7 +782,7 @@
 									disabled={isBusy}
 									class="flex items-center gap-1.5 px-2.5 py-1.5 bg-brand hover:bg-brand-hover text-white rounded-lg text-xs font-medium disabled:opacity-50 transition-colors"
 								>
-									<Play size={13} /> Start
+									<Play size={13} /> 啟動
 								</button>
 							{/if}
 						{/if}
@@ -792,9 +792,9 @@
 								onclick={() => openConfigure(app)}
 								class="ml-auto flex items-center gap-1.5 px-2.5 py-1.5 bg-canvas hover:bg-brand-soft border border-line-soft rounded-lg text-xs font-medium text-brand transition-colors"
 							>
-								<Sliders size={13} /> Configure
+								<Sliders size={13} /> 設定
 								{#if visibleProperties(app.properties).some((p) => p.overridden)}
-									<span class="ml-1 inline-block w-1.5 h-1.5 rounded-full bg-accent" title="Has overrides"></span>
+									<span class="ml-1 inline-block w-1.5 h-1.5 rounded-full bg-accent" title="有自訂設定"></span>
 								{/if}
 							</button>
 						{/if}
@@ -803,8 +803,8 @@
 								type="button"
 								onclick={() => confirmUninstall(app)}
 								disabled={isBusy || !$printerState.can_install}
-								title={!$printerState.can_install ? "Disabled while printer is busy" : "Uninstall this app"}
-								aria-label="Uninstall {app.name}"
+								title={!$printerState.can_install ? "印表機忙碌時無法執行" : "解除安裝此應用程式"}
+								aria-label="解除安裝 {app.name}"
 								class="{hasVisibleProperties(app) ? '' : 'ml-auto '}p-1.5 rounded-lg text-ink-faint hover:text-coral hover:bg-surface-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 							>
 								<Trash2 size={14} />
@@ -823,7 +823,7 @@
 		{#if catalogError}
 			<div class="bg-surface-accent border border-coral/40 rounded-xl px-4 py-3 text-coral text-sm flex items-center gap-2">
 				<AlertCircle size={16} />
-				{catalogError}
+				無法載入應用程式目錄：{catalogError}
 			</div>
 		{/if}
 
@@ -835,9 +835,9 @@
 		{/if}
 
 		{#if catalogLoading && !catalog}
-			<div class="text-ink-faint animate-pulse">Loading catalog from Rinkhals.Apps...</div>
+			<div class="text-ink-faint animate-pulse">正在從 Rinkhals.Apps 載入應用程式目錄…</div>
 		{:else if !catalog || visibleCatalog.length === 0}
-			<div class="text-ink-faint italic">No catalog entries match.</div>
+			<div class="text-ink-faint italic">應用程式目錄中沒有符合條件的項目。</div>
 		{:else}
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 				{#each visibleCatalog as entry (entry.id)}
@@ -857,7 +857,7 @@
 							{#if entry.installed && !upgradeAvailable}
 								<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-brand-soft text-brand text-[11px] font-semibold border border-brand/30">
 									<CheckCircle2 size={11} />
-									Installed
+									已安裝
 								</span>
 							{:else if upgradeAvailable}
 								<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-warm text-accent-hover text-[11px] font-semibold border border-accent/30">
@@ -878,7 +878,7 @@
 										onclick={() => toggleDesc(entry.id)}
 										class="text-[11px] text-brand hover:underline mt-0.5"
 									>
-										{expandedDescs.has(entry.id) ? 'Show less' : 'Show more'}
+										{expandedDescs.has(entry.id) ? '顯示較少' : '顯示更多'}
 									</button>
 								{/if}
 							</div>
@@ -900,7 +900,7 @@
 							{@const stale = entry.upstream_version !== entry.version}
 							<div class="flex items-center gap-2 text-[11px] {stale ? 'text-coral' : 'text-ink-faint'}">
 								<span class="inline-flex items-center gap-1">
-									Upstream:
+									上游版本：
 									{#if entry.upstream_url}
 										<a href={entry.upstream_url} target="_blank" rel="noopener noreferrer" class="font-mono hover:underline inline-flex items-center gap-0.5">
 											{entry.upstream_version}<ExternalLink size={10} />
@@ -910,8 +910,8 @@
 									{/if}
 								</span>
 								{#if stale}
-									<span class="px-1.5 py-0.5 rounded bg-surface-accent border border-coral/30 uppercase tracking-wider text-[9px] font-semibold" title="Bundled v{entry.version} is behind upstream">
-										Bundled is behind
+									<span class="px-1.5 py-0.5 rounded bg-surface-accent border border-coral/30 uppercase tracking-wider text-[9px] font-semibold" title="套件內附的 v{entry.version} 落後於上游版本">
+										內附版本較舊
 									</span>
 								{/if}
 							</div>
@@ -919,19 +919,19 @@
 
 						<div class="flex items-center gap-2 mt-auto pt-3 border-t border-line-soft">
 							{#if !entry.available_for_model}
-								<span class="text-[11px] text-ink-faint italic">No SWU for this printer</span>
+								<span class="text-[11px] text-ink-faint italic">這台印表機沒有可用的 SWU</span>
 							{:else if entry.installed && !upgradeAvailable}
 								<button
 									type="button"
 									onclick={() => installCatalogApp(entry)}
 									disabled={installing || !$printerState.can_install}
-									title={!$printerState.can_install ? "Disabled while printer is busy" : "Reinstall this app"}
+									title={!$printerState.can_install ? "印表機忙碌時無法執行" : "重新安裝此應用程式"}
 									class="flex items-center gap-1.5 px-2.5 py-1.5 bg-surface hover:bg-surface-warm border border-line-soft rounded-lg text-xs font-medium text-ink-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 								>
 									{#if installing}
-										<Loader2 size={13} class="animate-spin" /> Reinstalling...
+										<Loader2 size={13} class="animate-spin" /> 正在重新安裝…
 									{:else}
-										<RotateCw size={13} /> Reinstall
+										<RotateCw size={13} /> 重新安裝
 									{/if}
 								</button>
 							{:else}
@@ -939,13 +939,13 @@
 									type="button"
 									onclick={() => installCatalogApp(entry)}
 									disabled={installing || !$printerState.can_install}
-									title={!$printerState.can_install ? "Disabled while printer is busy" : (upgradeAvailable ? "Upgrade to the latest version" : "Install this app")}
+									title={!$printerState.can_install ? "印表機忙碌時無法執行" : (upgradeAvailable ? "升級至最新版" : "安裝此應用程式")}
 									class="flex items-center gap-1.5 px-2.5 py-1.5 bg-brand hover:bg-brand-hover text-white rounded-lg text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 								>
 									{#if installing}
-										<Loader2 size={13} class="animate-spin" /> Installing...
+										<Loader2 size={13} class="animate-spin" /> 正在安裝…
 									{:else}
-										<Download size={13} /> {upgradeAvailable ? "Upgrade" : "Install"}
+										<Download size={13} /> {upgradeAvailable ? "升級" : "安裝"}
 									{/if}
 								</button>
 							{/if}
@@ -955,7 +955,7 @@
 									target="_blank"
 									rel="noopener noreferrer"
 									class="ml-auto text-[11px] text-ink-faint hover:text-brand inline-flex items-center gap-1"
-									title="Download SWU directly"
+									title="直接下載 SWU"
 								>
 									SWU <ExternalLink size={11} />
 								</a>
@@ -983,7 +983,7 @@
 		>
 			<div class="px-5 py-4 border-b border-line-soft flex items-start justify-between sticky top-0 bg-canvas">
 				<div>
-					<p class="text-xs uppercase tracking-wider text-ink-faint font-medium">Configure</p>
+					<p class="text-xs uppercase tracking-wider text-ink-faint font-medium">設定</p>
 					<h3 class="text-lg font-semibold text-ink mt-0.5">{app.name}</h3>
 					<p class="text-[11px] text-ink-faint font-mono">{app.id}</p>
 				</div>
@@ -991,7 +991,7 @@
 					type="button"
 					onclick={closeConfigure}
 					class="p-1.5 rounded-lg text-ink-muted hover:text-ink hover:bg-surface transition-colors"
-					aria-label="Close"
+					aria-label="關閉"
 				>
 					<X size={18} />
 				</button>
@@ -1000,15 +1000,15 @@
 			<div class="p-5 space-y-5">
 				{#if !app.enabled}
 					<div class="bg-surface-warm border border-accent/30 rounded-lg px-3 py-2.5 text-[13px] text-accent-hover">
-						This app is installed but disabled. Adjust any settings below, then use <span class="font-medium">Enable app</span> to start it.
+						此應用程式已安裝但尚未啟用。請在下方調整設定，再選取<span class="font-medium">「啟用應用程式」</span>來啟動。
 					</div>
 				{/if}
 				{#if visibleProperties(app.properties).length === 0}
 					<p class="text-ink-muted text-sm italic">
 						{#if app.properties.length > 0}
-							This app has only advanced settings. Enable <span class="font-medium">Advanced</span> on the Apps page to see them.
+							此應用程式只有進階設定。請在應用程式頁面勾選<span class="font-medium">「進階」</span>以顯示這些設定。
 						{:else}
-							This app has no configurable properties.
+							此應用程式沒有可調整的設定。
 						{/if}
 					</p>
 				{:else}
@@ -1024,7 +1024,7 @@
 										onclick={() => resetProperty(prop)}
 										class="text-[11px] text-ink-faint hover:text-brand inline-flex items-center gap-1 transition-colors"
 									>
-										<RotateCcw size={11} /> Reset
+										<RotateCcw size={11} /> 重設
 									</button>
 								{/if}
 							</div>
@@ -1062,7 +1062,7 @@
 								{#if prop.value}
 									<div class="bg-surface border border-line-soft rounded-xl p-4 flex flex-col items-center gap-3">
 										<canvas use:qrCanvas={prop.value} class="rounded-md bg-white"></canvas>
-										<p class="text-[11px] text-ink-muted text-center">Scan with your phone, or open the URL below.</p>
+										<p class="text-[11px] text-ink-muted text-center">請用手機掃描，或開啟下方網址。</p>
 										<div class="w-full flex items-stretch gap-1.5">
 											<a
 												href={prop.value}
@@ -1077,8 +1077,8 @@
 												type="button"
 												onclick={() => copyToClipboard(prop.key, prop.value)}
 												class="shrink-0 px-2 py-1.5 bg-canvas hover:bg-surface-warm border border-line-soft rounded-md text-ink-muted hover:text-ink transition-colors"
-												title="Copy URL"
-												aria-label="Copy URL"
+												title="複製網址"
+												aria-label="複製網址"
 											>
 												{#if copiedKey === prop.key}
 													<Check size={13} class="text-brand" />
@@ -1088,19 +1088,19 @@
 											</button>
 										</div>
 										<p class="text-[11px] text-ink-faint text-center">
-											URLs from the app may expire. If scanning fails, restart the app from its card to get a fresh code.
+											應用程式提供的網址可能會過期。若掃描失敗，請從應用程式卡片重新啟動，以取得新的 QR 碼。
 										</p>
 									</div>
 								{:else if app.running}
 									<div class="bg-surface border border-line-soft rounded-xl p-4 text-center">
 										<Loader2 size={22} class="text-brand animate-spin mx-auto mb-2" />
-										<p class="text-sm text-ink">Waiting for the app to publish its login URL...</p>
-										<p class="text-[11px] text-ink-faint mt-1">This usually takes a few seconds after startup.</p>
+										<p class="text-sm text-ink">正在等待應用程式提供登入網址…</p>
+										<p class="text-[11px] text-ink-faint mt-1">通常在啟動後幾秒內就會提供。</p>
 									</div>
 								{:else}
 									<div class="bg-surface-warm border border-accent/30 rounded-xl p-4 text-center text-ink-2">
-										<p class="text-sm">Start the app to receive a login URL.</p>
-										<p class="text-[11px] text-ink-muted mt-1">The daemon needs to be running to generate it.</p>
+										<p class="text-sm">請啟動應用程式以取得登入網址。</p>
+										<p class="text-[11px] text-ink-muted mt-1">背景服務須在執行中才能產生登入網址。</p>
 									</div>
 								{/if}
 							{:else}
@@ -1123,9 +1123,9 @@
 							{/if}
 
 							<p class="text-[11px] text-ink-faint">
-								Default: <span class="font-mono">{prop.default || "—"}</span>
+								預設值：<span class="font-mono">{prop.default || "—"}</span>
 								{#if prop.overridden}
-									&middot; <span class="text-accent-hover">user override active</span>
+									&middot; <span class="text-accent-hover">正在使用自訂值</span>
 								{/if}
 							</p>
 						</div>
@@ -1133,7 +1133,7 @@
 				{/if}
 				{#if visibleProperties(app.properties).length > 0 && app.properties.length > visibleProperties(app.properties).length}
 					<p class="text-[11px] text-ink-faint italic pt-2 border-t border-line-soft">
-						{app.properties.length - visibleProperties(app.properties).length} advanced setting{app.properties.length - visibleProperties(app.properties).length === 1 ? "" : "s"} hidden. Toggle <span class="font-medium">Advanced</span> on the Apps page to reveal them.
+						有 {app.properties.length - visibleProperties(app.properties).length} 項進階設定未顯示。請在應用程式頁面勾選<span class="font-medium">「進階」</span>以顯示這些設定。
 					</p>
 				{/if}
 			</div>
@@ -1145,7 +1145,7 @@
 					disabled={!app.properties.some((p) => p.overridden)}
 					class="text-xs text-coral hover:underline disabled:opacity-40 disabled:no-underline"
 				>
-					Clear all overrides
+					清除所有自訂設定
 				</button>
 				<div class="flex items-center gap-2">
 					<button
@@ -1153,7 +1153,7 @@
 						onclick={closeConfigure}
 						class="px-3 py-1.5 rounded-lg text-sm font-medium bg-surface hover:bg-surface-warm border border-line-soft text-ink"
 					>
-						Close
+						關閉
 					</button>
 					<button
 						type="button"
@@ -1164,7 +1164,7 @@
 						{#if configSaving}
 							<Loader2 size={13} class="animate-spin" />
 						{/if}
-						Save
+						儲存
 					</button>
 					{#if !app.enabled}
 						<button
@@ -1174,7 +1174,7 @@
 							class="px-3 py-1.5 rounded-lg text-sm font-medium bg-brand hover:bg-brand-hover text-white disabled:opacity-40 flex items-center gap-1.5"
 						>
 							<Play size={13} />
-							Enable app
+							啟用應用程式
 						</button>
 					{/if}
 				</div>
@@ -1198,10 +1198,10 @@
 		>
 			<div class="flex items-center text-coral mb-3">
 				<AlertTriangle size={22} class="mr-2" />
-				<h2 class="text-lg font-semibold text-ink">Uninstall {uninstallTarget.name}?</h2>
+				<h2 class="text-lg font-semibold text-ink">要解除安裝 {uninstallTarget.name} 嗎？</h2>
 			</div>
 			<p class="text-ink-2 text-sm mb-2">
-				This removes the app and all its saved configuration. The app will be stopped first.
+				系統會先停止此應用程式，再移除應用程式及其所有已儲存的設定。
 			</p>
 			<p class="text-ink-muted text-xs mb-5">
 				<span class="font-mono">{uninstallTarget.id}</span> &middot; user app
@@ -1213,13 +1213,13 @@
 					disabled={uninstallRunning}
 					class="px-4 py-2 rounded-lg font-medium bg-surface hover:bg-surface-warm border border-line-soft text-ink disabled:opacity-50"
 				>
-					Cancel
+					取消
 				</button>
 				<button
 					type="button"
 					onclick={performUninstall}
 					disabled={uninstallRunning || !$printerState.can_install}
-					title={!$printerState.can_install ? "Disabled while printer is busy" : ""}
+					title={!$printerState.can_install ? "印表機忙碌時無法執行" : ""}
 					class="px-4 py-2 rounded-lg font-medium bg-coral hover:opacity-90 text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
 				>
 					{#if uninstallRunning}
@@ -1227,7 +1227,7 @@
 					{:else}
 						<Trash2 size={14} />
 					{/if}
-					Uninstall
+					解除安裝
 				</button>
 			</div>
 		</div>

@@ -6,5 +6,5 @@
 </script>
 
 <svelte:head>
-	<title>Terminal - Rinkhals</title>
+	<title>終端機 - Rinkhals</title>
 </svelte:head>

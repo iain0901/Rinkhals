@@ -64,7 +64,7 @@
 			if (!res.ok) throw new Error(`HTTP ${res.status}`);
 			data = await res.json();
 		} catch (e: any) {
-			error = e.message || "Failed to load patches";
+			error = e.message || "無法載入修補程式";
 		} finally {
 			loading = false;
 		}
@@ -77,35 +77,35 @@
 			<Layers size={20} />
 		</div>
 		<div class="flex-1 min-w-0">
-			<h3 class="text-base font-semibold text-ink">Rinkhals patches</h3>
+			<h3 class="text-base font-semibold text-ink">Rinkhals 修補程式</h3>
 			<p class="text-ink-muted text-sm mt-1">
-				What Rinkhals modifies on top of the stock Anycubic firmware. Useful before swapping firmware versions: if a binary patch for the target version is missing, Rinkhals will boot stock until you install a matching release.
+				查看 Rinkhals 對 Anycubic 原廠韌體所做的修改。切換韌體版本前可先確認：若目標版本缺少二進位修補程式，印表機將以原廠韌體啟動，直到安裝相符的 Rinkhals 版本。
 			</p>
 		</div>
 	</div>
 
 	{#if loading}
 		<div class="flex items-center gap-2 text-ink-muted text-sm">
-			<Loader2 size={14} class="animate-spin" /> Loading patches...
+			<Loader2 size={14} class="animate-spin" /> 正在載入修補程式…
 		</div>
 	{:else if error}
 		<div class="bg-coral/10 border border-coral/40 rounded-lg p-3 text-sm text-ink">
-			Could not load patches: {error}
+			無法載入修補程式： {error}
 		</div>
 	{:else if data}
 		{#if !data.compatible_for_run}
 			<div class="bg-coral/10 border border-coral/40 rounded-lg p-3 mb-4 text-sm flex items-start gap-2">
 				<AlertTriangle size={14} class="text-coral shrink-0 mt-0.5" />
 				<div class="text-ink-muted">
-					Rinkhals does not have binary patches for {data.model_code} firmware {data.firmware_version}. The Rinkhals services may not load correctly on this combination.
+					Rinkhals 沒有適用於 {data.model_code} 韌體 {data.firmware_version} 的二進位修補程式。此組合可能無法正確載入 Rinkhals 服務。
 				</div>
 			</div>
 		{/if}
 
 		<div class="mb-4">
-			<h4 class="text-xs uppercase tracking-wider text-ink-faint mb-2">Binary patches</h4>
+			<h4 class="text-xs uppercase tracking-wider text-ink-faint mb-2">二進位修補程式</h4>
 			{#if groupedBinaries.length === 0}
-				<p class="text-sm text-ink-muted italic">No binary patches found.</p>
+				<p class="text-sm text-ink-muted italic">找不到二進位修補程式。</p>
 			{:else}
 				<div class="space-y-2">
 					{#each groupedBinaries as group}
@@ -115,13 +115,13 @@
 									<span class="font-medium text-ink">{group.name}</span>
 									<code class="text-[11px] text-ink-muted ml-2">{group.target}</code>
 								</div>
-								<span class="text-[11px] text-ink-faint">{group.entries.length} version{group.entries.length === 1 ? "" : "s"}</span>
+								<span class="text-[11px] text-ink-faint">{group.entries.length} 個版本</span>
 							</div>
 							<div class="flex flex-wrap gap-1.5">
 								{#each group.entries as e}
 									<span
 										class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[11px] {e.applies_to_this ? 'bg-emerald/15 text-emerald font-semibold' : 'bg-surface-warm text-ink-muted'}"
-										title="{e.model} firmware {e.firmware_ver} - {fmtSize(e.size_bytes)}"
+										title="{e.model} 韌體 {e.firmware_ver} — {fmtSize(e.size_bytes)}"
 									>
 										{#if e.applies_to_this}
 											<CheckCircle2 size={10} />
@@ -137,7 +137,7 @@
 		</div>
 
 		<div>
-			<h4 class="text-xs uppercase tracking-wider text-ink-faint mb-2">Script hooks</h4>
+			<h4 class="text-xs uppercase tracking-wider text-ink-faint mb-2">指令碼掛鉤</h4>
 			<div class="space-y-2">
 				{#each data.script_hooks as h}
 					<div class="bg-surface border border-line-soft rounded-lg px-4 py-3">
@@ -145,11 +145,11 @@
 							<span class="font-medium text-ink text-sm">{h.name}</span>
 							{#if h.present}
 								<span class="inline-flex items-center gap-1 text-emerald text-[11px]">
-									<CheckCircle2 size={11} /> active
+									<CheckCircle2 size={11} /> 使用中
 								</span>
 							{:else}
 								<span class="inline-flex items-center gap-1 text-ink-faint text-[11px]">
-									not present
+									未找到
 								</span>
 							{/if}
 						</div>

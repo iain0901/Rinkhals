@@ -13,7 +13,7 @@
 
     async function loadFile() {
         if (!filePath.trim()) {
-            message = { text: "Please enter a valid path to load", isError: true };
+            message = { text: "請輸入有效的檔案路徑。", isError: true };
             return;
         }
 
@@ -25,12 +25,12 @@
                 content = await res.text();
                 isFileLoaded = true;
             } else {
-                message = { text: `Failed to load: ${res.statusText}`, isError: true };
+                message = { text: `無法載入： ${res.statusText}`, isError: true };
                 content = '';
                 isFileLoaded = false;
             }
         } catch (e: any) {
-            message = { text: `Error: ${e.message}`, isError: true };
+            message = { text: `錯誤：${e.message}`, isError: true };
             content = '';
             isFileLoaded = false;
         } finally {
@@ -51,13 +51,13 @@
             });
 
             if (res.ok) {
-                message = { text: 'File saved successfully', isError: false };
+                message = { text: '檔案已儲存。', isError: false };
                 setTimeout(() => message.text = '', 3000);
             } else {
-                message = { text: `Failed to save: ${res.statusText}`, isError: true };
+                message = { text: `無法儲存： ${res.statusText}`, isError: true };
             }
         } catch (e: any) {
-            message = { text: `Error: ${e.message}`, isError: true };
+            message = { text: `錯誤：${e.message}`, isError: true };
         } finally {
             saving = false;
         }
@@ -71,16 +71,16 @@
 </script>
 
 <svelte:head>
-    <title>Text Editor - Rinkhals</title>
+    <title>文字編輯器 - Rinkhals</title>
 </svelte:head>
 
 <div class="space-y-6 h-full flex flex-col max-w-7xl mx-auto w-full">
     <header class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-4 pb-4 border-b border-line-soft">
         <div>
-            <p class="text-xs uppercase tracking-wider text-ink-faint font-medium">Configuration</p>
+            <p class="text-xs uppercase tracking-wider text-ink-faint font-medium">設定</p>
             <h2 class="text-3xl font-semibold text-ink mt-1 tracking-tight flex items-center gap-2">
                 <FileText size={26} class="text-brand" />
-                Text editor
+                文字編輯器
             </h2>
         </div>
 
@@ -96,7 +96,7 @@
                 <input
                     type="text"
                     bind:value={filePath}
-                    placeholder="Enter file path..."
+                    placeholder="輸入檔案路徑…"
                     class="bg-transparent border-none text-ink px-2 py-1.5 focus:outline-none w-64 text-sm font-mono"
                     onkeypress={(e) => e.key === 'Enter' && loadFile()}
                 />
@@ -105,7 +105,7 @@
                     disabled={loading}
                     class="px-3 py-1.5 bg-surface hover:bg-surface-warm border border-line-soft rounded text-sm text-ink font-medium transition-colors disabled:opacity-50"
                 >
-                    Load
+                    載入
                 </button>
             </div>
 
@@ -119,7 +119,7 @@
                     Saving...
                 {:else}
                     <Save size={16} />
-                    Save file
+                    儲存檔案
                 {/if}
             </button>
         </div>
@@ -129,13 +129,13 @@
         {#if loading}
             <div class="absolute inset-0 bg-canvas/70 flex flex-col items-center justify-center z-10 backdrop-blur-sm">
                 <Loader2 size={40} class="text-brand animate-spin mb-3" />
-                <span class="text-ink-2 font-medium text-sm">Loading contents...</span>
+                <span class="text-ink-2 font-medium text-sm">正在載入檔案內容…</span>
             </div>
         {:else if !isFileLoaded && !content}
             <div class="absolute inset-0 flex flex-col items-center justify-center text-ink-faint">
                 <FileText size={40} class="mb-3 opacity-60" />
-                <p class="text-base font-medium text-ink-muted">No file loaded</p>
-                <p class="text-sm">Enter a file path above, or start typing to create a new file.</p>
+                <p class="text-base font-medium text-ink-muted">尚未載入檔案</p>
+                <p class="text-sm">請在上方輸入檔案路徑，或直接輸入內容以建立新檔案。</p>
             </div>
         {/if}
 
@@ -143,7 +143,7 @@
             bind:value={content}
             oninput={() => { if(!isFileLoaded) isFileLoaded = true; }}
             class="w-full h-full bg-transparent text-ink-2 font-mono text-[13px] p-4 focus:outline-none resize-none relative z-0 {(!isFileLoaded && !content) ? 'opacity-0' : 'opacity-100'}"
-            placeholder="File content..."
+            placeholder="檔案內容…"
             spellcheck="false"
         ></textarea>
     </div>

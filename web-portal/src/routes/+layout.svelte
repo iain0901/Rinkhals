@@ -13,9 +13,9 @@
 	let onTerminalRoute = $derived($page.url.pathname.startsWith("/terminal"));
 
 	const themeLabels: Record<ThemePreference, string> = {
-		system: "System theme",
-		light: "Light theme",
-		dark: "Dark theme"
+		system: "跟隨系統",
+		light: "淺色",
+		dark: "深色"
 	};
 
 	let showPasswordModal = $state(false);
@@ -25,14 +25,14 @@
 	let errorMsg = $state("");
 
 	const nav = [
-		{ href: "/", label: "Dashboard", icon: LayoutDashboard },
-		{ href: "/apps", label: "Apps", icon: Boxes },
-		{ href: "/firmware", label: "Firmware", icon: Cpu },
-		{ href: "/files", label: "File Browser", icon: FolderOpen },
-		{ href: "/logs", label: "System Logs", icon: ScrollText },
-		{ href: "/terminal", label: "Terminal", icon: Terminal },
-		{ href: "/editor", label: "Text Editor", icon: FileText },
-		{ href: "/management", label: "Manage Rinkhals", icon: Settings }
+		{ href: "/", label: "總覽", icon: LayoutDashboard },
+		{ href: "/apps", label: "應用程式", icon: Boxes },
+		{ href: "/firmware", label: "韌體", icon: Cpu },
+		{ href: "/files", label: "檔案瀏覽器", icon: FolderOpen },
+		{ href: "/logs", label: "系統記錄", icon: ScrollText },
+		{ href: "/terminal", label: "終端機", icon: Terminal },
+		{ href: "/editor", label: "文字編輯器", icon: FileText },
+		{ href: "/management", label: "管理 Rinkhals", icon: Settings }
 	];
 
 	onMount(async () => {
@@ -53,11 +53,11 @@
 	async function changePassword() {
 		errorMsg = "";
 		if (newPassword.length < 5) {
-			errorMsg = "Password must be at least 5 characters.";
+			errorMsg = "密碼至少須有 5 個字元。";
 			return;
 		}
 		if (newPassword !== confirmPassword) {
-			errorMsg = "Passwords do not match.";
+			errorMsg = "兩次輸入的密碼不一致。";
 			return;
 		}
 		try {
@@ -69,13 +69,13 @@
 			});
 			if (res.ok) {
 				showPasswordModal = false;
-				alert("Password changed out of default state. Please log in again using your new credentials. (The screen will refresh)");
+				alert("預設密碼已變更。請使用新的帳號密碼重新登入（頁面將重新整理）。");
 				window.location.reload();
 			} else {
-				errorMsg = "Failed to update password. Server returned an error.";
+				errorMsg = "無法更新密碼：伺服器傳回錯誤。";
 			}
 		} catch (e) {
-			errorMsg = "Network error updating password.";
+			errorMsg = "更新密碼時發生網路錯誤。";
 		}
 	}
 </script>
@@ -84,11 +84,11 @@
 	<aside class="w-64 bg-surface border-r border-line-soft flex flex-col">
 		<div class="h-20 flex items-center px-5 border-b border-line-soft gap-3">
 			<div class="w-11 h-11 rounded-xl bg-canvas border border-line-soft flex items-center justify-center overflow-hidden shrink-0">
-				<img src="/assets/logo.png" alt="Rinkhals Logo" class="w-9 h-9 object-contain" />
+				<img src="/assets/logo.png" alt="Rinkhals 標誌" class="w-9 h-9 object-contain" />
 			</div>
 			<div class="leading-tight">
 				<h1 class="text-lg font-semibold text-ink tracking-tight">Rinkhals</h1>
-				<p class="text-[11px] uppercase tracking-wider text-ink-faint">Printer Console</p>
+				<p class="text-[11px] uppercase tracking-wider text-ink-faint">印表機控制台</p>
 			</div>
 		</div>
 
@@ -113,8 +113,8 @@
 			<button
 				type="button"
 				onclick={cycleTheme}
-				title="Theme: {themeLabels[$themePreference]} (click to cycle)"
-				aria-label="Cycle theme"
+				title="主題：{themeLabels[$themePreference]}（點選以切換）"
+				aria-label="切換主題"
 				class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-medium text-ink-muted hover:bg-surface-warm hover:text-ink transition-colors border border-line-soft"
 			>
 				{#if $themePreference === "system"}
@@ -124,9 +124,9 @@
 				{:else}
 					<Moon size={14} class="text-ink-muted" />
 				{/if}
-				<span class="capitalize">{$themePreference}</span>
+				<span class="capitalize">{themeLabels[$themePreference]}</span>
 				{#if $themePreference === "system"}
-					<span class="text-ink-faint">({$resolvedTheme})</span>
+					<span class="text-ink-faint">（{themeLabels[$resolvedTheme]}）</span>
 				{/if}
 			</button>
 		</div>
@@ -151,25 +151,25 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="fixed inset-0 bg-ink/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
 	<div class="bg-canvas border border-line rounded-2xl max-w-md w-full p-6 shadow-2xl relative" onclick={(e) => e.stopPropagation()}>
-		<div class="absolute -top-3 -right-3 bg-coral text-white text-xs font-semibold px-3 py-1 rounded-full shadow">Action Required</div>
+		<div class="absolute -top-3 -right-3 bg-coral text-white text-xs font-semibold px-3 py-1 rounded-full shadow">需要處理</div>
 		<h2 class="text-xl font-semibold text-ink mb-2 flex items-center gap-2">
-			<ShieldAlert class="text-coral" size={22} /> Security warning
+			<ShieldAlert class="text-coral" size={22} /> 安全性警告
 		</h2>
 		<p class="text-ink-2 text-sm mb-5 pb-4 border-b border-line-soft">
-			Rinkhals Web is using the default credentials (<strong>admin</strong>/<strong>rinkhals</strong>). Because this app exposes a raw terminal, please set a new password before going further.
+			Rinkhals 網頁控制台正在使用預設帳號密碼（<strong>admin</strong>/<strong>rinkhals</strong>）。此控制台提供直接存取終端機的功能，請先設定新密碼再繼續。
 		</p>
 
 		<form class="space-y-4" onsubmit={(e) => { e.preventDefault(); changePassword(); }}>
 			<div>
-				<label class="block text-xs font-medium text-ink-muted mb-1" for="user">Username</label>
+				<label class="block text-xs font-medium text-ink-muted mb-1" for="user">使用者名稱</label>
 				<input id="user" type="text" bind:value={newUsername} class="w-full bg-canvas border border-line rounded-lg px-3 py-2 text-ink focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand" required />
 			</div>
 			<div>
-				<label class="block text-xs font-medium text-ink-muted mb-1" for="pass">New password</label>
+				<label class="block text-xs font-medium text-ink-muted mb-1" for="pass">新密碼</label>
 				<input id="pass" type="password" bind:value={newPassword} class="w-full bg-canvas border border-line rounded-lg px-3 py-2 text-ink focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand" required />
 			</div>
 			<div>
-				<label class="block text-xs font-medium text-ink-muted mb-1" for="pass2">Confirm password</label>
+				<label class="block text-xs font-medium text-ink-muted mb-1" for="pass2">確認密碼</label>
 				<input id="pass2" type="password" bind:value={confirmPassword} class="w-full bg-canvas border border-line rounded-lg px-3 py-2 text-ink focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand" required />
 			</div>
 
@@ -179,7 +179,7 @@
 
 			<div class="pt-2 flex justify-end">
 				<button type="submit" class="px-5 py-2 bg-brand hover:bg-brand-hover text-white font-medium rounded-lg transition-colors shadow-sm">
-					Save credentials
+					儲存帳號密碼
 				</button>
 			</div>
 		</form>

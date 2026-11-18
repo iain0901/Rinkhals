@@ -11,7 +11,7 @@
 		onClose: () => void;
 	}
 
-	let { title, subtitle, body, externalUrl, externalLabel = "View on GitHub", onClose }: Props = $props();
+	let { title, subtitle, body, externalUrl, externalLabel = "在 GitHub 上檢視", onClose }: Props = $props();
 
 	// Pre-render once; markdown bodies don't change while the modal is open.
 	const html = $derived(renderMarkdown(body));
@@ -44,7 +44,7 @@
 			<button
 				type="button"
 				onclick={onClose}
-				aria-label="Close release notes"
+				aria-label="關閉版本說明"
 				class="text-ink-faint hover:text-ink p-1 rounded-md hover:bg-surface-warm transition-colors shrink-0"
 			>
 				<X size={18} />
@@ -59,7 +59,7 @@
 					{@html html}
 				</div>
 			{:else}
-				<p class="text-sm text-ink-muted italic">No release notes provided.</p>
+				<p class="text-sm text-ink-muted italic">未提供版本說明。</p>
 			{/if}
 		</div>
 

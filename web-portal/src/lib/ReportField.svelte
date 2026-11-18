@@ -39,22 +39,22 @@
 	// Tailscale-known states, mapped to a (tone, label, icon) tuple. Unknown
 	// values fall through to a neutral grey.
 	const tsStateTone: Record<string, { tone: string; label: string }> = {
-		Running: { tone: "ok", label: "Connected" },
-		Starting: { tone: "warn", label: "Starting" },
-		NeedsLogin: { tone: "warn", label: "Needs login" },
-		NoState: { tone: "warn", label: "Initializing" },
-		Stopped: { tone: "muted", label: "Stopped" }
+		Running: { tone: "ok", label: "已連線" },
+		Starting: { tone: "warn", label: "正在啟動" },
+		NeedsLogin: { tone: "warn", label: "需要登入" },
+		NoState: { tone: "warn", label: "正在初始化" },
+		Stopped: { tone: "muted", label: "已停止" }
 	};
 </script>
 
 {#if !parsed}
 	<div class="bg-surface border border-line-soft rounded-xl p-3 text-center text-ink-faint text-sm">
 		<Loader2 size={18} class="inline-block animate-spin mr-1.5 align-middle" />
-		Waiting for status...
+		正在等待狀態資訊…
 	</div>
 {:else if appId === "tailscale"}
 	{@const state = parsed.state ?? "Unknown"}
-	{@const stateMeta = tsStateTone[state] ?? { tone: "muted", label: state }}
+	{@const stateMeta = tsStateTone[state] ?? { tone: "muted", label: state === "Unknown" ? "未知" : state }}
 	{@const isRunning = state === "Running"}
 	<div class="bg-surface border border-line-soft rounded-xl divide-y divide-line-soft">
 		<!-- Connection state -->
@@ -81,12 +81,12 @@
 		{#if parsed.tailnet_ip}
 			<div class="px-4 py-2.5 flex items-center gap-2 text-sm">
 				<Globe size={15} class="text-ink-faint shrink-0" />
-				<span class="text-ink-muted shrink-0">Tailnet IP</span>
+				<span class="text-ink-muted shrink-0">Tailnet IP 位址</span>
 				<button
 					type="button"
 					onclick={() => copy("ip", parsed.tailnet_ip)}
 					class="ml-auto inline-flex items-center gap-1 font-mono text-ink hover:text-brand transition-colors"
-					title="Copy"
+					title="複製"
 				>
 					{parsed.tailnet_ip}
 					{#if copied === "ip"}
@@ -119,7 +119,7 @@
 		{#if parsed.hostname}
 			<div class="px-4 py-2.5 flex items-center gap-2 text-sm">
 				<Server size={15} class="text-ink-faint shrink-0" />
-				<span class="text-ink-muted shrink-0">Hostname</span>
+				<span class="text-ink-muted shrink-0">主機名稱</span>
 				<span class="ml-auto font-mono text-ink truncate" title={parsed.hostname}>
 					{parsed.hostname}
 				</span>
@@ -131,15 +131,15 @@
 		<div class="px-4 py-2.5 flex flex-wrap items-center gap-3 text-[12px]">
 			<span class="inline-flex items-center gap-1.5 {parsed.ssh ? 'text-brand' : 'text-ink-faint'}">
 				<ShieldCheck size={13} />
-				SSH {parsed.ssh ? "on" : "off"}
+				SSH：{parsed.ssh ? "開啟" : "關閉"}
 			</span>
 			<span class="inline-flex items-center gap-1.5 {parsed.exit_node ? 'text-accent-hover' : 'text-ink-faint'}">
 				<Globe size={13} />
-				Exit node {parsed.exit_node ? "advertised" : "off"}
+				出口節點：{parsed.exit_node ? "已宣告" : "關閉"}
 			</span>
 			{#if isRunning}
 				<span class="inline-flex items-center gap-1.5 text-ink-faint ml-auto">
-					<Users size={13} /> {parsed.peer_count ?? 0} peer{parsed.peer_count === 1 ? "" : "s"}
+					<Users size={13} /> {parsed.peer_count ?? 0} 個對等節點
 				</span>
 			{/if}
 		</div>

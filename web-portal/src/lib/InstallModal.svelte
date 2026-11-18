@@ -82,7 +82,7 @@
 			dryRun = false;
 			phase = "confirm";
 		} catch (e: any) {
-			preflightError = e.message || "Preflight failed";
+			preflightError = e.message || "安裝前檢查失敗";
 			phase = "failed";
 		}
 	}
@@ -106,7 +106,7 @@
 			phase = "running";
 			openProgressStream();
 		} catch (e: any) {
-			commitError = e.message || "Commit failed";
+			commitError = e.message || "無法開始安裝";
 			phase = "failed";
 		}
 	}
@@ -214,7 +214,7 @@
 				<button
 					type="button"
 					onclick={onClose}
-					aria-label="Close install dialog"
+					aria-label="關閉安裝對話框"
 					class="text-ink-faint hover:text-ink p-1 rounded-md hover:bg-surface-warm transition-colors"
 				>
 					<X size={18} />
@@ -225,7 +225,7 @@
 		<div class="flex-1 overflow-auto px-6 py-5 text-sm">
 			{#if phase === "preflighting"}
 				<div class="flex items-center gap-2 text-ink-muted">
-					<Loader2 size={16} class="animate-spin" /> Checking compatibility and reserving install slot...
+					<Loader2 size={16} class="animate-spin" /> 正在檢查相容性並保留安裝名額…
 				</div>
 			{:else if phase === "confirm" && preflight}
 				{#if preflight.compatibility && !preflight.compatibility.compatible}
@@ -233,7 +233,7 @@
 						<div class="flex items-start gap-2">
 							<ShieldAlert size={16} class="text-coral shrink-0 mt-0.5" />
 							<div>
-								<p class="font-medium text-ink mb-1">Compatibility warning</p>
+								<p class="font-medium text-ink mb-1">相容性警告</p>
 								{#each preflight.compatibility.warnings as w}
 									<p class="text-ink-muted text-xs">{w}</p>
 								{/each}
@@ -244,11 +244,11 @@
 
 				<div class="space-y-3 mb-4">
 					<div class="bg-surface border border-line-soft rounded-lg px-4 py-3">
-						<div class="text-xs uppercase tracking-wider text-ink-faint">Source</div>
-						<div class="text-ink mt-0.5">{source === "rinkhals" ? "Rinkhals release" : "Anycubic stock firmware"}</div>
+						<div class="text-xs uppercase tracking-wider text-ink-faint">來源</div>
+						<div class="text-ink mt-0.5">{source === "rinkhals" ? "Rinkhals 發行版本" : "Anycubic 原廠韌體"}</div>
 					</div>
 					<div class="bg-surface border border-line-soft rounded-lg px-4 py-3">
-						<div class="text-xs uppercase tracking-wider text-ink-faint">Version</div>
+						<div class="text-xs uppercase tracking-wider text-ink-faint">版本</div>
 						<div class="text-ink mt-0.5">{version}</div>
 					</div>
 				</div>
@@ -256,14 +256,14 @@
 				<div class="bg-surface-warm border border-accent/30 rounded-lg p-3 mb-4 text-xs flex items-start gap-2">
 					<AlertTriangle size={14} class="text-accent shrink-0 mt-0.5" />
 					<div class="text-ink-muted">
-						This will download the SWU, extract it, run the printer's installer, and reboot. The portal will be unreachable for about a minute while the printer restarts. Do not unplug the printer during this process.
+						系統會下載並解壓縮 SWU、執行印表機的安裝程式，然後重新啟動。印表機重新啟動期間，網頁控制台約有一分鐘無法使用。請勿在過程中拔除印表機電源。
 					</div>
 				</div>
 
 				<label class="flex items-start gap-2 text-xs text-ink-muted mb-4 cursor-pointer">
 					<input type="checkbox" bind:checked={dryRun} class="accent-brand mt-0.5" />
 					<span>
-						<span class="text-ink">Dry-run only</span> &mdash; download and extract the SWU but do not run the installer or reboot. Useful if you want to verify the download path and SWU integrity before committing to a real flash. Off by default.
+						<span class="text-ink">僅試執行</span>：只下載並解壓縮 SWU，不執行安裝程式，也不會重新啟動。可在實際刷寫韌體前確認下載路徑和 SWU 的完整性。預設不啟用。
 					</span>
 				</label>
 
@@ -273,33 +273,33 @@
 						onclick={onClose}
 						class="px-4 py-2 text-sm font-medium rounded-md border border-line-soft text-ink-muted hover:bg-surface-warm hover:text-ink transition-colors"
 					>
-						Cancel
+						取消
 					</button>
 					<button
 						type="button"
 						onclick={doCommit}
 						class="px-4 py-2 text-sm font-medium rounded-md bg-brand hover:bg-brand-hover text-white transition-colors"
 					>
-						{dryRun ? "Run dry-run" : "Confirm install"}
+						{dryRun ? "開始試執行" : "確認安裝"}
 					</button>
 				</div>
 			{:else if phase === "starting" || phase === "running"}
 				<div class="space-y-3">
 					<div class="bg-surface border border-line-soft rounded-lg px-4 py-3">
-						<div class="text-xs uppercase tracking-wider text-ink-faint">Status</div>
+						<div class="text-xs uppercase tracking-wider text-ink-faint">狀態</div>
 						<div class="text-ink mt-0.5 flex items-center gap-2">
 							<Loader2 size={14} class="animate-spin text-brand" />
-							{runState?.message ?? "Starting..."}
+							{runState?.message ?? "正在開始安裝…"}
 						</div>
 						{#if runState?.dry_run}
-							<div class="text-xs text-accent mt-1">Dry-run mode</div>
+							<div class="text-xs text-accent mt-1">試執行模式</div>
 						{/if}
 					</div>
 
 					{#if runState && runState.state === "downloading" && runState.total_mb > 0}
 						<div>
 							<div class="flex items-center justify-between text-xs mb-1">
-								<span class="text-ink-muted">Download</span>
+								<span class="text-ink-muted">下載</span>
 								<span class="text-ink">{runState.download_pct}% ({runState.downloaded_mb.toFixed(1)} / {runState.total_mb.toFixed(1)} MB)</span>
 							</div>
 							<div class="h-2 bg-surface-warm rounded-full overflow-hidden">
@@ -310,7 +310,7 @@
 
 					{#if progressLog.length > 0}
 						<details open class="text-xs">
-							<summary class="cursor-pointer text-ink-muted hover:text-ink select-none">Install log ({progressLog.length} lines)</summary>
+							<summary class="cursor-pointer text-ink-muted hover:text-ink select-none">安裝記錄（{progressLog.length} 行）</summary>
 							<pre class="mt-2 bg-surface-warm border border-line-soft rounded-md p-3 text-[11px] leading-relaxed max-h-64 overflow-auto whitespace-pre-wrap text-ink-2">{progressLog.join('\n')}</pre>
 						</details>
 					{/if}
@@ -318,13 +318,13 @@
 			{:else if phase === "rebooting"}
 				<div class="text-center py-4">
 					<Loader2 size={28} class="animate-spin text-brand mx-auto mb-3" />
-					<p class="text-ink font-medium mb-1">Printer is rebooting</p>
+					<p class="text-ink font-medium mb-1">印表機正在重新啟動</p>
 					<p class="text-ink-muted text-xs mb-4">
-						The portal will reconnect automatically when the printer is back online. This usually takes about a minute.
+						印表機恢復連線後，網頁控制台會自動重新連線。通常需要約一分鐘。
 					</p>
 					{#if progressLog.length > 0}
 						<details class="text-xs text-left">
-							<summary class="cursor-pointer text-ink-muted hover:text-ink select-none">Install log ({progressLog.length} lines)</summary>
+							<summary class="cursor-pointer text-ink-muted hover:text-ink select-none">安裝記錄（{progressLog.length} 行）</summary>
 							<pre class="mt-2 bg-surface-warm border border-line-soft rounded-md p-3 text-[11px] leading-relaxed max-h-48 overflow-auto whitespace-pre-wrap text-ink-2 text-left">{progressLog.join('\n')}</pre>
 						</details>
 					{/if}
@@ -332,12 +332,12 @@
 			{:else if phase === "complete"}
 				<div class="text-center py-4">
 					<CheckCircle2 size={28} class="text-emerald mx-auto mb-3" />
-					<p class="text-ink font-medium mb-1">{runState?.dry_run ? "Dry-run complete" : "Install complete"}</p>
+					<p class="text-ink font-medium mb-1">{runState?.dry_run ? "試執行完成" : "安裝完成"}</p>
 					<p class="text-ink-muted text-xs mb-4">
 						{#if runState?.dry_run}
-							The SWU was downloaded and extracted successfully. No system changes were made.
+							SWU 已下載並解壓縮。系統未做任何變更。
 						{:else}
-							The printer has rebooted and is back online. Reload the page to see the updated firmware status.
+							印表機已重新啟動並恢復連線。請重新整理頁面以查看更新後的韌體狀態。
 						{/if}
 					</p>
 					<div class="flex justify-center gap-2">
@@ -346,7 +346,7 @@
 							onclick={onClose}
 							class="px-4 py-2 text-sm font-medium rounded-md border border-line-soft text-ink-muted hover:bg-surface-warm hover:text-ink transition-colors"
 						>
-							Close
+							關閉
 						</button>
 						{#if !runState?.dry_run}
 							<button
@@ -354,7 +354,7 @@
 								onclick={reload}
 								class="px-4 py-2 text-sm font-medium rounded-md bg-brand hover:bg-brand-hover text-white transition-colors"
 							>
-								Reload portal
+								重新整理控制台
 							</button>
 						{/if}
 					</div>
@@ -364,14 +364,14 @@
 					<div class="flex items-start gap-2">
 						<ShieldAlert size={16} class="text-coral shrink-0 mt-0.5" />
 						<div class="text-xs">
-							<p class="font-medium text-ink mb-1">Install failed</p>
-							<p class="text-ink-muted">{commitError || preflightError || runState?.error || "Unknown failure"}</p>
+							<p class="font-medium text-ink mb-1">安裝失敗</p>
+							<p class="text-ink-muted">{commitError || preflightError || runState?.error || "未知錯誤"}</p>
 						</div>
 					</div>
 				</div>
 				{#if progressLog.length > 0}
 					<details open class="text-xs mb-4">
-						<summary class="cursor-pointer text-ink-muted hover:text-ink select-none">Install log ({progressLog.length} lines)</summary>
+						<summary class="cursor-pointer text-ink-muted hover:text-ink select-none">安裝記錄（{progressLog.length} 行）</summary>
 						<pre class="mt-2 bg-surface-warm border border-line-soft rounded-md p-3 text-[11px] leading-relaxed max-h-64 overflow-auto whitespace-pre-wrap text-ink-2">{progressLog.join('\n')}</pre>
 					</details>
 				{/if}
@@ -381,7 +381,7 @@
 						onclick={onClose}
 						class="px-4 py-2 text-sm font-medium rounded-md border border-line-soft text-ink-muted hover:bg-surface-warm hover:text-ink transition-colors"
 					>
-						Close
+						關閉
 					</button>
 				</div>
 			{/if}

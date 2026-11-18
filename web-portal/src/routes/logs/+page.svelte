@@ -45,11 +45,11 @@
         };
 
         ws.onerror = () => {
-            logs = [...logs, '-- Connection error --'];
+            logs = [...logs, '-- 連線錯誤 --'];
         };
 
         ws.onclose = () => {
-            logs = [...logs, '-- Connection closed --'];
+            logs = [...logs, '-- 連線已關閉 --'];
         };
     }
 
@@ -68,16 +68,16 @@
 </script>
 
 <svelte:head>
-    <title>Log Viewer - Rinkhals</title>
+    <title>系統記錄 - Rinkhals</title>
 </svelte:head>
 
 <div class="space-y-6 h-full flex flex-col max-w-7xl mx-auto w-full">
     <header class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-4 pb-4 border-b border-line-soft">
         <div>
-            <p class="text-xs uppercase tracking-wider text-ink-faint font-medium">Diagnostics</p>
+            <p class="text-xs uppercase tracking-wider text-ink-faint font-medium">診斷</p>
             <h2 class="text-3xl font-semibold text-ink mt-1 tracking-tight flex items-center gap-2">
                 <ScrollText size={26} class="text-brand" />
-                System logs
+                系統記錄
             </h2>
         </div>
         <div class="flex flex-wrap gap-2 items-center">
@@ -99,7 +99,7 @@
                         : 'bg-canvas text-ink-muted border-line-soft'}"
                 onclick={() => autoScroll = !autoScroll}
             >
-                Auto-scroll {autoScroll ? 'on' : 'off'}
+                自動捲動：{autoScroll ? '開啟' : '關閉'}
             </button>
         </div>
     </header>
@@ -113,7 +113,7 @@
                 <div class="hover:bg-surface px-1">{line}</div>
             {/each}
             {#if logs.length === 0}
-                <div class="text-ink-faint italic">Waiting for log data...</div>
+                <div class="text-ink-faint italic">正在等待記錄資料…</div>
             {/if}
         </div>
     </div>
